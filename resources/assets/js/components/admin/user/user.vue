@@ -1,0 +1,97 @@
+<template>
+    <div>
+        <div class="gm-breadcrumb">
+            <i class="ion-ios-home gm-home"></i>
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item>用户模块</el-breadcrumb-item>
+                <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <router-link to="/user/edit">
+            <el-button type="primary" size="small">添加用户</el-button>
+        </router-link>
+        <el-table
+                :data="tableData"
+                border
+                style="width: 100%; margin-top:10px;">
+            <el-table-column
+                    label="用户名">
+                <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="电话">
+                <template slot-scope="scope">
+                    {{ scope.row.phone }}
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="类型">
+                <template slot-scope="scope">
+                    {{ scope.row.type == 3 ? '公司用户': scope.row.type==4 ? '管理员' :'' }}
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="创建时间">
+                <template slot-scope="scope">
+                    {{ scope.row.create_time | format_time }}
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="300">
+                <template slot-scope="scope">
+                    <el-button
+                            size="small"
+                            type="primary"
+                            @click="handleEdit(scope.row.id)">信息编辑
+                    </el-button>
+                    <el-button
+                            size="small"
+                            type="warning"
+                            @click="resetPwd(scope.row.id)">重置密码
+                    </el-button>
+                    <el-button
+                            size="small"
+                            type="danger"
+                            @click="handleDelete(scope.row.id)"> 删 除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination
+                @size-change="onPageSizeChange"
+                @current-change="onPageChange"
+                :current-page="page"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+        </el-pagination>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                tableData: [],
+                page: 1,
+                pageSize: 10,
+                total: 0,
+            }
+        },
+        methods: {
+            
+            onPageChange(val){
+                this.page = val;
+            },
+            onPageSizeChange(val){
+                this.pageSize = val;
+
+            },
+        },
+            
+        mounted(){
+        }
+    }
+</script>
