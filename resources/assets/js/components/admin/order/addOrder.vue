@@ -220,6 +220,7 @@
                     id              : '',
                     consignee       : '',
                     address_name    : '',
+                    detailedAddress : '',
                     consignee_mobile: ''
                 },
                 skus                : [],

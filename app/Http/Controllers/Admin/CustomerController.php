@@ -43,50 +43,36 @@ class CustomerController{
         $user       = new User;
         DB::beginTransaction();
 
-//          try{
-              $customer_id = $customer->insertGetId(
-                  ['name' => $name , 'linkman' => $linkman , 'phone' => $phone]
-              );
+          try{
 
-              $address_data = $address -> insert(
-                  ['consignee' => $linkman , 'consignee_mobile' => $phone, 'address_name' => $address_n ,
-                      'code' => $code , 'status' => 0 , 'customer_id' => $customer_id]
-              );
+              $customer->name             = $name;
+              $customer->linkman          = $linkman;
+              $customer->phone            = $phone;
+              $customer->save();
 
-              $user_data = $user -> insert(
-                  ['name' => $linkman , 'phone' => $phone , 'password' => '666' , 'salt' => '3ND5' ,'status' => 0 , 'type' => 0]
-              );
+              $address->consignee         = $linkman;
+              $address->consignee_mobile  = $phone;
+              $address->address_name      = $address_n;
+              $address->code              = $code;
+              $address->status            = 0;
+              $address->customer_id       = $customer->id;
+              $address->save();
 
-            if($customer_id && $address_data && $user_data){
-                DB::commit();
-                return Response::json(['code' => 0 , 'msg' => '操作成功']);
-            }else{
-                DB::rollback();
-                return Response::json(['code' => 1 , 'msg' => '操作失败']);
-            }
+              $user->name     = $linkman;
+              $user->phone    = $phone;
+              $user->password = 1;
+              $user->salt     = "3ND5";
+              $user->status   = 1;
+              $user->type     = 2;
+              $user->save();
 
-//              $address->consignee         = $linkman;
-//              $address->consignee_mobile  = $phone;
-//              $address->address_name      = $address_n;
-//              $address->code              = $code;
-//              $address->status            = 0;
-//              $address->customer_id       = $customer_id;
-//              $address-save();
-//
-//              $user->name     = $linkman;
-//              $user->phone    = $phone;
-//              $user->password = 1;
-//              $user->salt     = "3ND5";
-//              $user->status   = 1;
-//              $user-save();
-
-//              DB::commit();
-//              return Response::json(['code' => 0 , 'msg' => '操作成功']);
-//          }catch (Exception $err){
-//              DB::rollback();
-//              Log::info($err);
-//              return Response::json(['code' => 1 , 'msg' => '操作失败']);
-//          }
+              DB::commit();
+              return Response::json(['code' => 0 , 'msg' => '操作成功']);
+          }catch (Exception $err){
+              DB::rollback();
+              Log::info($err);
+              return Response::json(['code' => 1 , 'msg' => '操作失败']);
+          }
   }
 
   /*
