@@ -106,7 +106,7 @@
                                 :file-list="fileList">
                             <i class="el-icon-upload"></i>
                             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                            <div class="el-upload__tip" slot="tip">只能上传jpg/png/zip/rar文件，超过三个文件请将之放在一个文件中压缩后上传</div>
+                            <div class="el-upload__tip" slot="tip">只能上传jpg/png/zip/rar文件，且不超过500kb，超过三个文件请将之放在一个文件中压缩后上传</div>
                         </el-upload>
                     </el-col>
                 </el-row>
@@ -229,7 +229,7 @@
                 csrf_token: {
                     _token: document.querySelector('meta[name="csrf"]').content
                 },
-                fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+                fileList: [],
                 ruleForm: {
                     customer_id     : 0,
                     product_id      : 0,
@@ -295,16 +295,12 @@
                 return this.$confirm(`确定移除 ${ file.name }？`)
             },
             beforeImgUpload(file) {
-                const isFormatAllows = file.type === 'image/jpeg' || file.type === 'image/png';
-                const isLt2M = file.size / 1024 / 1024 < 2;
+                const isLt3M = file.size / 1024 / 1024 < 3;
 
-                if (!isJPG) {
-                    this.$message.error('上传图片只能是 JPG 格式!');
+                if (!isLt3M) {
+                    this.$message.error('上传文件大小不能超过3MB!');
                 }
-                if (!isLt2M) {
-                    this.$message.error('上传图片大小不能超过 2MB!');
-                }
-                return isFormatAllows && isLt2M;
+                return isLt3M;
             },
             error:function (err,file,fileList) {
                 this.$message.warning('文件上传失败！');
