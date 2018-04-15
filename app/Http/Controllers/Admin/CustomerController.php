@@ -1,7 +1,6 @@
 <?php 
  
   namespace App\Http\Controllers\Admin;
-
   use App\Models\Admin\Customer;
   use App\Models\Admin\Address;
   use App\Models\Admin\User;
@@ -19,11 +18,15 @@ class CustomerController{
     function getAllCustomer(Request $request){
 
         $pageSize = $request->input('pageSize', 5);
+
         $address  = Customer::join('address','customer.id','=','address.customer_id')
+
             ->select('customer.id','customer.name','customer.linkman','address_name','customer.phone')
             ->where('address.status',0)
             ->paginate($pageSize);
+
         Log::info(json_encode($address));
+        
         return Response::json(['customer' => $address]);
     }
 
