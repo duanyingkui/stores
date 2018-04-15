@@ -86,6 +86,31 @@
                     </el-col>
                 </el-row>
             </el-form-item>
+            <el-form-item label="上传文件：">
+                <el-row>
+                    <el-col :span="10">
+                        <el-upload
+                                class="upload-demo"
+                                drag
+                                action="https://jsonplaceholder.typicode.com/posts/"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :before-remove="beforeRemove"
+                                :before-upload="beforeImgUpload"
+                                :on-error="error"
+                                :data="csrf_token"
+                                accept=".png,.jpg,.jpeg,.rar,.zip"
+                                multiple
+                                :limit="3"
+                                :on-exceed="handleExceed"
+                                :file-list="fileList">
+                            <i class="el-icon-upload"></i>
+                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                            <div class="el-upload__tip" slot="tip">只能上传jpg/png/zip/rar文件，且不超过500kb，超过三个文件请将之放在一个文件中压缩后上传</div>
+                        </el-upload>
+                    </el-col>
+                </el-row>
+            </el-form-item>
             <hr>
             <el-form-item label="应当付款：" prop="should_pay">
                 <el-row>
@@ -201,6 +226,10 @@
     export default{
         data(){
             return {
+                csrf_token: {
+                    _token: document.querySelector('meta[name="csrf"]').content
+                },
+                fileList: [],
                 ruleForm: {
                     customer_id     : 0,
                     product_id      : 0,
@@ -220,6 +249,7 @@
                     id              : '',
                     consignee       : '',
                     address_name    : '',
+                    detailedAddress : '',
                     consignee_mobile: ''
                 },
                 skus                : [],
@@ -251,6 +281,31 @@
             }
         },
         methods : {
+            //上传文件
+            handleRemove(file, fileList) {
+                console.log(file, fileList)
+            },
+            handlePreview(file) {
+                console.log(file)
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件,超过三个文件请将之放在一个文件中压缩后上传`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${ file.name }？`)
+            },
+            beforeImgUpload(file) {
+                const isLt3M = file.size / 1024 / 1024 < 3;
+
+                if (!isLt3M) {
+                    this.$message.error('上传文件大小不能超过3MB!');
+                }
+                return isLt3M;
+            },
+            error:function (err,file,fileList) {
+                this.$message.warning('文件上传失败！');
+            },
+            //地址
             handleChange (value) {
                 console.log(value)
                 console.log(CodeToText[value[0]])
