@@ -138,7 +138,6 @@
 <div class="wrap">
 	<div class="header">
 		{{config("app.name")}}
-        <!-- 微印商城 -->
 	</div>
 	<div class="content">
 		<div class="login-box">
