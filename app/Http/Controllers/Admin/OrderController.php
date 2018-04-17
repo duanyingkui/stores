@@ -113,6 +113,8 @@ class OrderController extends Controller
         return responseToJson(0,'success');
     }
 
+    
+
     function addOrder(Request $request){
         $cus_id             = $request->input('customer_id');
         $p_id               = $request->input('product_id');
