@@ -14,6 +14,9 @@ class CreateVarietyTable extends Migration
     public function up()
     {
         Schema::create('variety',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');           
             $table->string('product_id',50)->comment('产品种类或类型名称');
             // $table->comment('产品类型表');

@@ -13,9 +13,9 @@
 
 class CustomerController{
 
-  /*
-    ORM模型，获取客户信息
-  */
+    /*
+        ORM模型，获取客户信息
+    */
     function getAllCustomer(Request $request){
 
         $pageSize = $request->input('pageSize', 5);
@@ -27,10 +27,10 @@ class CustomerController{
         return Response::json(['customer' => $address]);
     }
 
-  /*
-    ORM模型，添加客户信息
-  */
-  function addCustomer(Request $request){
+    /*
+        ORM模型，添加客户信息
+    */
+    function addCustomer(Request $request){
 
         $name         = $request->input('name','');
         $linkman      = $request->input('linkman','');
@@ -44,18 +44,18 @@ class CustomerController{
         DB::beginTransaction();
 
 //          try{
-              $customer_id = $customer->insertGetId(
-                  ['name' => $name , 'linkman' => $linkman , 'phone' => $phone]
-              );
+                $customer_id = $customer->insertGetId(
+                    ['name' => $name , 'linkman' => $linkman , 'phone' => $phone]
+                );
 
-              $address_data = $address -> insert(
-                  ['consignee' => $linkman , 'consignee_mobile' => $phone, 'address_name' => $address_n ,
+                $address_data = $address -> insert(
+                    ['consignee' => $linkman , 'consignee_mobile' => $phone, 'address_name' => $address_n ,
                       'code' => $code , 'status' => 0 , 'customer_id' => $customer_id]
-              );
+                );
 
-              $user_data = $user -> insert(
-                  ['name' => $linkman , 'phone' => $phone , 'password' => '666' , 'salt' => '3ND5' ,'status' => 0 , 'type' => 0]
-              );
+                $user_data = $user -> insert(
+                    ['name' => $linkman , 'phone' => $phone , 'password' => '666' , 'salt' => '3ND5' ,'status' => 0 , 'type' => 0]
+                );
 
             if($customer_id && $address_data && $user_data){
                 DB::commit();
@@ -87,45 +87,13 @@ class CustomerController{
 //              Log::info($err);
 //              return Response::json(['code' => 1 , 'msg' => '操作失败']);
 //          }
-  }
+    }
 
   /*
     根据制定ID查询客户信息
   */
-  function getCustomer(Request $request){
-      $customer = $request->input('id');
+    function getCustomer(Request $request){
+        $customer = $request->input('id');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  }
+    }
 }

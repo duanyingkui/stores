@@ -51,11 +51,6 @@ export default new VueRouter({
             path: '/customer/list',
             component: resolve =>void(require(['../components/admin/customer/customerList.vue'], resolve))
         },
-        {
-            name: '新增客户',
-            path: '/customer/add',
-            component: resolve =>void(require(['../components/admin/customer/addCustomer.vue'], resolve))
-        },
         //用户模块
         {
             path: '/user/list',

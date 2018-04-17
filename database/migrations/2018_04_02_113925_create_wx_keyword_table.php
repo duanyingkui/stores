@@ -14,6 +14,9 @@ class CreateWxKeywordTable extends Migration
     public function up()
     {
         Schema::create('wx_keyword',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('name',100)->comment('关键词');
             $table->tinyInteger('reply_id')->default(0)->comment('规则id');

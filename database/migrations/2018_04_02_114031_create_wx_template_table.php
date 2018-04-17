@@ -14,6 +14,9 @@ class CreateWxTemplateTable extends Migration
     public function up()
     {
         Schema::create('wx_template',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('name')->comment('自定义名称');
             $table->string('wx_name')->comment('微信名称');

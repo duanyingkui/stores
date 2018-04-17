@@ -15,11 +15,14 @@ class CreateUserTable extends Migration
     {
         //
         Schema::create('user',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('name',10)->comment('用户名');
             $table->string('phone',11)->unique()->comment('手机号');
-            $table->string('password',32)->comment('密码');
-            $table->string('salt',4)->comment('盐值');
+            $table->char('password',32)->comment('密码');
+            $table->char('salt',4)->comment('盐值');
             $table->tinyInteger('status')->default(0)->comment('状态(0正常,1删除)');
             $table->integer('role_id',false,false)->comment('角色id');
             $table->tinyInteger('type')->comment('角色类型(0管理员,1员工,2客户,3供应商)');
