@@ -18,10 +18,24 @@ class CustomerController{
   */
     function getAllCustomer(Request $request){
 
-        $pageSize = $request->input('pageSize', 5);
-        $address  = Customer::join('address','customer.id','=','address.customer_id')
+        $pageSize   = $request->input('pageSize', 5);
+        $queryData  = $request->input('queryData');
+        if($queryData){
+          $address  = Customer::join('address','customer.id','=','address.customer_id')
             ->select('customer.id','customer.name','customer.linkman','address_name','customer.phone','customer.created_at')
             ->where('address.status',0)
+            ->paginate($pageSize);
+        }
+        $address  = Customer::join('address','customer.id','=','address.customer_id')
+            ->select('customer.id','customer.name','customer.linkman','address_name','customer.phone','customer.created_at')
+            ->where([
+              ['address.status','=', 0],
+              ['customer.name','like','%'.$queryData.'%'],
+            ])
+            ->orWhere([
+              ['address.status','=', 0],
+              ['customer.linkman','like','%'.$queryData.'%'],
+            ])
             ->paginate($pageSize);
         Log::info(json_encode($address));
         return Response::json(['customer' => $address]);
@@ -59,7 +73,7 @@ class CustomerController{
 
               $user->name     = $phone;
               $user->phone    = $phone;
-              $user->password = encrypt_password("123",$salt_data);
+              $user->password = encrypt_password("123456",$salt_data);
               $user->salt     = $salt_data;
               $user->status   = 0;
               $user->type     = 2;
