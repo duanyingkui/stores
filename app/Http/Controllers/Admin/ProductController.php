@@ -26,13 +26,13 @@ class ProductController extends Controller
             return responseToJson(2, '(' . $old . ')文件上传出错！');
         }
         $size = $file->getSize();
-        $maxSize = 1 * 1024 * 1024;
+        $maxSize = 2 * 1024 * 1024;
 //        $realPath = $file->getRealPath();
         if ($size > $maxSize) {
-            return responseToJson(3, '单个文件不能超过1M！');
+            return responseToJson(3, '单个文件不能超过2M！');
         }
         $ext = $file->getClientOriginalExtension();
-        $filename = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' . $ext; //命名格式有问题，现在改了可以用了
+        $filename = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' . $ext; 
         if (Storage::disk('productFiles')->put($filename, File::get($file))) {
             $file_info = array("original" => $old, "name" => $filename, "size" => $size, "ext" => $ext);
             return responseToJson(0, 'success', $file_info);
@@ -40,4 +40,9 @@ class ProductController extends Controller
             return responseToJson(4, '(' . $old . ')文件保存出错！');
         }
     }
+
+    public function add_product(Request $request){
+        
+    }
+
 }

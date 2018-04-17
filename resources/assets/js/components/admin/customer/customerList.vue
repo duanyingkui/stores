@@ -257,7 +257,6 @@
                 var phone1  = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
                 var mobile  = /\d{3}-\d{8}|\d{4}-\d{7}/;
                 var text    = /^[\u4E00-\u9FA5A-Za-z0-9]{3,20}$/;
-
                 if(!phone1.test(this.form.phone) && !mobile.test(this.form.phone)){
                     this.$message.error("手机号错误");
                 }else if(!text.test(this.form.name)){
@@ -288,7 +287,6 @@
                             console.log(err);
                         })
                     }
-
                 });
             },
             //修改客户信息
@@ -307,7 +305,6 @@
                     self.editForm.linkman   =   data.customer.linkman;
                     self.editForm.phone     =   data.customer.phone;
                     self.editForm.address   =   data.address[0]['address_name'];
-
                     var codes = data.address[0]['code'].split('/')
                     var address = ''
                     codes.forEach(function (value) {
@@ -320,7 +317,6 @@
                     console.log(err);
                 });
             },
-
             //删除客户信息
             deleteCustomer(id , phone){
                 let self = this;
@@ -346,7 +342,6 @@
                     })
                 })
             },
-
             //分页，每页显示多少条记录
             onPageSizeChange(val){
                 this.pageSize = val ;
@@ -365,5 +360,4 @@
             })
         }
     }
-
 </script>

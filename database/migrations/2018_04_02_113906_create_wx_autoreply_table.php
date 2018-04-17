@@ -15,6 +15,9 @@ class CreateWxAutoreplyTable extends Migration
     {
         //
         Schema::create('wx_autoreply',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('title',100)->comment('规则名称');
             $table->tinyInteger('category')->default(0)->comment('类型，0：被添加自动回复(关注时回复)，1：消息自动回复（关键字匹配不到回复），2：关键词自动回复');

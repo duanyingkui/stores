@@ -14,6 +14,9 @@ class CreateShopOrderTable extends Migration
     public function up()
     {
         Schema::create('shop_order',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('order_number',100)->comment('订单编号');           
             $table->integer('cus_id',false,false)->comment('客户id');
@@ -35,6 +38,9 @@ class CreateShopOrderTable extends Migration
         });
 
         Schema::create('shop_order_file',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');           
             $table->integer('order_id',false,false)->comment('订单id');
             $table->integer('file_id',false,false)->comment('文件id');

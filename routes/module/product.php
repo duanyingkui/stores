@@ -8,4 +8,6 @@
 
 Route::group(['prefix'=>"product" , 'namespace'=>'Admin'],function(){
     Route::post('set_imglist',['uses'=>'ProductController@set_imglist']);
+    Route::post('add_product',['uses'=>'ProductController@add_product']);
+
 });
