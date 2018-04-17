@@ -118,28 +118,14 @@
             return {
                 editForm: {
                     name: '',
-
                     unit: '',
-                    img:[],
                     type: '',
                     fileList: [],
                     sku: true,
                     desc: ''
                 },
-                units: [{
-                    value: '选项1',
-                    label: '件'
-                }, {
-                    value: '选项2',
-                    label: '张'
-                }],
-                types: [{
-                    value: '选项1',
-                    label: '喷绘'
-                }, {
-                    value: '选项2',
-                    label: '写真'
-                }],
+                units: [],
+                types: [],
                 rules: {
                     name: [
                         { required: true, message: '请输入产品名称', trigger: 'blur' },
@@ -212,7 +198,6 @@
             beforeUpload(file) {
                 const isPNG = file.type === 'image/png';
                 const isJPEG = file.type === 'image/jpeg';
-                console.log(isPNG+'=---'+isJPEG);                
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isPNG && !isJPEG) {
                     this.$message.error('上传图片只能是 JPG/PNG 格式!');
@@ -229,9 +214,45 @@
             },
             handleImgExceed(files,fileList){
                 this.$message.warning('当前限制选择 1 个文件');
-            }
+            },
+            get_units(){
+                var self = this;
+                axios.get('/admin/product/get_units').then(function (res) {
+                    console.log(res.data.result);
+                    var data = res.data;
+                    if(data.code == 0){
+                       self.units = data.result;
+                    }else{
+                        self.$message({
+                            type: 'error',
+                            message: data.msg
+                        });
+                    }
+                }, function (err) {
+                    console.log(err);
+                });
+            },
+            get_variety(){
+                var self = this;
+                axios.get('/admin/product/get_variety').then(function (res) {
+                    console.log(res.data.result);
+                    var data = res.data;
+                    if(data.code == 0){
+                       self.types = data.result;
+                    }else{
+                        self.$message({
+                            type: 'error',
+                            message: data.msg
+                        });
+                    }
+                }, function (err) {
+                    console.log(err);
+                });
+            },
         },
         mounted(){
+            this.get_units();
+            this.get_variety();
             if(isNaN(this.id)){
                 this.editForm.desc = ' '
             }
