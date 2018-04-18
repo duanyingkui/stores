@@ -14,6 +14,9 @@ class CreateWxConfigTable extends Migration
     public function up()
     {
         Schema::create('wx_config',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('appid',100)->nullable()->comment('微信公众号appid');
             $table->string('appsecret',200)->nullable()->comment('微信公众号appsecret');

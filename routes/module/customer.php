@@ -10,5 +10,6 @@ Route::group(['prefix'=>"customer", 'namespace'=>'Admin'],function(){
 // admin/customer/list
 	Route::get("list",'CustomerController@getAllCustomer');
 	Route::post("list/add","CustomerController@addCustomer");
-    Route::get("list/git","Customer@getCustomer");
+    Route::get("list/get","CustomerController@getCustomer");
+    Route::get("list/delete","CustomerController@delCustomer");
 });

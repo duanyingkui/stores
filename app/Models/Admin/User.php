@@ -8,8 +8,9 @@ use Log;
 
 class User extends Model
 {
-   protected $table = 'user';
-   protected $fillable = ['name'];
+   	protected $table = 'user';
+   	protected $fillable = ['name'];
+   	
     public function fromDateTime($value){
         return strtotime(parent::fromDateTime($value));
     }
