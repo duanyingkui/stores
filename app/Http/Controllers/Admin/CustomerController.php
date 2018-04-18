@@ -20,12 +20,7 @@ class CustomerController{
         $pageSize = $request->input('pageSize', 5);
 
         $address  = Customer::join('address','customer.id','=','address.customer_id')
-<<<<<<< HEAD
-
-            ->select('customer.id','customer.name','customer.linkman','address_name','customer.phone')
-=======
             ->select('customer.id','customer.name','customer.linkman','address_name','customer.phone','customer.created_at')
->>>>>>> 82a5345e6b0ceac7a026c6da859e450c724af573
             ->where('address.status',0)
             ->paginate($pageSize);
 

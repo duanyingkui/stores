@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: WeiYalin
+ * User: zhihuiting
  * Date: 2018/3/26
  * Time: 21:26
  */
@@ -15,6 +15,11 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Admin\Unit;
 use App\Models\Admin\Variety;
+use App\Models\Admin\Product;
+use App\Models\Admin\Files;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -48,6 +53,14 @@ class ProductController extends Controller
     }
 
     /**
+     * 删除文件
+     */
+    public function deleteFile($path)
+    {
+        Storage::disk('productFiles')->delete($path);
+    }
+
+    /**
      * 获取所有产品单位
      */
     public function get_units(){
@@ -59,6 +72,9 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * 获取所有产品类型
+     */
     public function get_variety(){
         $variety = Variety::get_variety();
         if($variety){
@@ -68,8 +84,44 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * 添加产品
+     */
     public function add_product(Request $request){
-        
+        $arr['product_name'] = $request->input('name');
+        $sku                 = $request->input('sku');
+        $arr['unit_id']      = $request->input('unit');
+        $arr['variety_id']   = $request->input('type');
+        $arr['content']      = $request->input('desc');
+        $fileList            = $request->input('fileList');
+        $oneimg              = $request->input('oneimg');
+        if($sku == true){
+            $arr['is_sku']   = 1;
+        }else{
+            $arr['is_sku']   = 0; 
+        }
+        DB::beginTransaction();
+        try{
+            $product_id = Product::add_product($arr,$fileList);
+            foreach($fileList as $file){
+                Files::add_file($file['original'],$file['name'],1,$product_id);
+            } 
+            foreach($oneimg as $file){
+                Files::add_file($file['original'],$file['name'],2,$product_id);
+            }
+            DB::commit();
+            return responseToJson(0,'success');
+        }catch (Exception $e){
+            DB::rollback();
+            foreach($fileList as $file){
+                $this->deleteFile($file['name']);
+            } 
+            foreach($oneimg as $file){
+                $this->deleteFile($file['name']);
+            }
+            Log::info($e);
+            return responseToJson(1,"add_product error!");
+        }
     }
 
 }

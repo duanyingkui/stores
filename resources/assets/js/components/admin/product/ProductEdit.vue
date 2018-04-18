@@ -45,7 +45,7 @@
                                 :before-upload="beforeUpload"
                                 :on-error="error"
                                 :auto-upload="false"
-                                :on-success="imglist">
+                                :on-success="img">
                             <i class="el-icon-plus" slot="trigger"></i>
                         </el-upload>
                     </el-form-item>
@@ -61,9 +61,9 @@
                         <el-select v-model="editForm.unit" filterable placeholder="请选择">
                             <el-option
                                     v-for="item in units"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
+                                    :key="item.id"
+                                    :label="item.value"
+                                    :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -71,9 +71,9 @@
                         <el-select v-model="editForm.type" filterable placeholder="请选择">
                             <el-option
                                     v-for="item in types"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
+                                    :key="item.id"
+                                    :label="item.value"
+                                    :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -121,6 +121,7 @@
                     unit: '',
                     type: '',
                     fileList: [],
+                    oneimg: [],
                     sku: true,
                     desc: ''
                 },
@@ -186,6 +187,14 @@
                     this.editForm.fileList.push(res.result);
                 }else{
                     this.editForm.fileList.$remove(file);
+                    this.$message.warning(file.name+'-文件上传失败,请重新上传');
+                }
+            },
+            img:function(res,file) {
+                if(res.code == 0){
+                    this.editForm.oneimg.push(res.result);
+                }else{
+                    this.editForm.oneimg.$remove(file);
                     this.$message.warning(file.name+'-文件上传失败,请重新上传');
                 }
             },
