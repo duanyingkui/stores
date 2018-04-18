@@ -16,10 +16,10 @@
             <el-button class="button"><i class="icon ion-trash-a"></i>&nbsp;批量删除</el-button>
           </el-form-item>
           <el-form-item>
-            <el-input id="input" placeholder="请输入查询内容" v-model="input10" clearable></el-input>
+            <el-input id="input" placeholder="请输入查询内容" v-model="queryData" clearable></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="button" @click="onSubmit"><i class="icon ion-search"></i>&nbsp;查询</el-button>
+            <el-button type="primary" class="button" @click="getCustomer"><i class="icon ion-search"></i>&nbsp;查询</el-button>
           </el-form-item>
         </el-form>
 
@@ -170,7 +170,7 @@
         data(){
             return {
                 tableData   : [],
-                input10     : '',
+                queryData     : '',
                 checked     : true,
                 checkList   : [],
                 page        : 1,
@@ -226,14 +226,15 @@
 //                console.log(CodeToText[value[2]])
             },
             onSubmit() {
-                console.log('subwwwmit!');
+                console.log(this.queryData);
             },
             //获取客户信息
             getCustomer(){               
                 let self = this;
                 let params = {
-                    pageSize : self.pageSize,
-                    page : self.page
+                    pageSize    : self.pageSize,
+                    page        : self.page,
+                    queryData   : self.queryData,
                 }
                 axios.get('admin/customer/list',{params:params}).then(res => {
                     self.tableData  = res.data.customer.data;
