@@ -14,6 +14,9 @@ class CreateShopSupplierOrderTable extends Migration
     public function up()
     {
         Schema::create('shop_supplier_order',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');           
             $table->integer('shop_order_id',false,false)->comment('客户下单id');
             $table->integer('supplier_order_id',false,false)->comment('商家下单id');

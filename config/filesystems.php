@@ -50,7 +50,7 @@ return [
 
         'productFiles' => [
             'driver' => 'local',
-            'root' => public_path('uploads/product_files'),
+            'root' => storage_path('app/productFile'),
         ],
 
         'public' => [

@@ -14,6 +14,9 @@ class CreateTemplatesTable extends Migration
     public function up()
     {
         Schema::create('templates',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('name')->comment('模板名称');
             $table->string('demo_pic')->comment('demo图片');
