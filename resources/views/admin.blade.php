@@ -13,6 +13,7 @@
     <meta name="x5-fullscreen" content="true">
     <meta name="csrf" content="{{csrf_token()}}">
     <title>首页-{{config("app.company_name")}}{{config("app.name")}}</title>
+    <link href="img/march.ico" rel="shortcut icon" type="image/x-icon">
     <link rel="stylesheet" href="{{ url('css/admin.css') }}">
     <link href="https://cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
     <script src="{{ url('js/jquery.min.js') }}"></script>

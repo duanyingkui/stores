@@ -68,6 +68,11 @@ export default new VueRouter({
             path: '/role/edit',
             component: resolve => void (require(['../components/admin/user/role_edit.vue'], resolve))
         },
+        {
+            name: '新增供应商',
+            path: '/supplier/add',
+            component: resolve =>void(require(['../components/admin/supplier/addSupplier.vue'], resolve))
+        },
     ]
 })
 
