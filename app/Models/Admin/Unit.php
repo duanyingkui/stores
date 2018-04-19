@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: WeiYalin
  * Date: 2018/3/27
- * Time: 0:57
+ * Time: 0:24
  */
 
 namespace App\Models\Admin;
@@ -11,14 +11,20 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model
+class Unit extends Model
 {
-    protected $table = 'item';
+    protected $table = 'product_unit';
     protected $fillable = ['id','name'];
+
     public function fromDateTime($value){
         return strtotime(parent::fromDateTime($value));
     }
-    public static function getItem($skuId){
-        return Item::select('id as item_id','name')->where('sku_id',$skuId)->get();
+
+    /**
+     * 查询所有产品单位
+     */
+    public static function get_units(){
+        return Unit::select('id','name as value')->get();
     }
+
 }

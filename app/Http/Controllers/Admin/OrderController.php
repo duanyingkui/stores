@@ -16,7 +16,6 @@ use App\Models\Admin\Item;
 use App\Models\Admin\Order;
 use App\Models\Admin\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
@@ -29,9 +28,7 @@ class OrderController extends Controller
     function getDefaultAddress(Request $request){
         $id = $request->input('id');
         if ($id) {
-            $address = Address::where('customer_id',$id)
-                ->where('status',0)
-                ->first();
+            $address = Address::getDefaultAddress($id);
             if($address){
                 return responseToJson(0,'success',$address);
             }
@@ -40,7 +37,7 @@ class OrderController extends Controller
     }
 
     function getProduct(){
-        $prodects = Product::select('id', 'product_name as value')->get();
+        $prodects = Product::getOrderProduct();
         return responseToJson(0,'success',$prodects);
     }
 
@@ -50,7 +47,7 @@ class OrderController extends Controller
             $skus = Product::find($id)->skus;
             foreach($skus as $key => $sku){
                 $skus[$key]->select = '';
-                $skus[$key]->items = Item::select('id as item_id','name')->where('sku_id',$sku->id)->get();
+                $skus[$key]->items = Item::getItem($sku->id);
             }
             return responseToJson(0,'success',$skus);
         }
@@ -59,7 +56,7 @@ class OrderController extends Controller
 
     function getAddress(Request $request){
         $id      = $request->input('id');
-        $address = Address::where('customer_id',$id)->get();
+        $address = Address::getAddress($id);
         if($address){
             return responseToJson(0,'success',$address);
         }
@@ -69,17 +66,9 @@ class OrderController extends Controller
     function setAddress(Request $request){
         $id          = $request->input('id');
         $customer_id = $request->input('customer_id');
-        $address = Address::find($id);
-        DB::beginTransaction();
-        try{
-            Address::where('customer_id',$customer_id)->where('status',0)->update(['status'=>1]);
-            $address->status = 0;
-            $address->save();
-            DB::commit();
+        if(Address::setAddress($id,$customer_id)){
             return responseToJson(0,'success');
-        }catch (Exception $e){
-            DB::rollback();
-            Log::info($e);
+        }else{
             return responseToJson(1,'failed');
         }
     }
@@ -112,8 +101,6 @@ class OrderController extends Controller
         Address::find($id)->delete();
         return responseToJson(0,'success');
     }
-
-    
 
     function addOrder(Request $request){
         $cus_id             = $request->input('customer_id');
@@ -156,5 +143,33 @@ class OrderController extends Controller
             return responseToJson(0,'success');
         else
             return responseToJson(1,'failed');
+    }
+
+    function upload(Request $request){
+        if (!$request->hasFile('file')) {
+            return responseToJson(1, '上传文件为空！');
+        }
+        $file = $request->file('file');
+        $old = $file->getClientOriginalName();
+        if (!$file->isValid()) {
+            return responseToJson(2, '(' . $old . ')文件上传出错！');
+        }
+        $size = $file->getSize();
+        $maxSize = 10 * 1024 * 1024;
+        if ($size > $maxSize) {
+            return responseToJson(3, '单个文件不能超过10M！');
+        }
+        $destPath = storage_path('app/orderFiles');
+        if (!file_exists($destPath))
+            mkdir($destPath, 0777, true);
+        $ext = $file->getClientOriginalExtension();
+        $filename = create_uuid(). '.' . $ext;
+        if ($file->move($destPath, $filename)) {
+            $file_info = array("original" => $old,"path" => $destPath, "name" => $filename);
+            return responseToJson(0, 'success', $file_info);
+        } else {
+            return responseToJson(4, '(' . $old . ')文件保存出错！');
+        }
+
     }
 }

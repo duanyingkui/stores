@@ -14,15 +14,21 @@ class CreateSupplierTable extends Migration
     public function up()
     {
         Schema::create('supplier',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('name',100)->comment('供应商名称');
-            $table->string('phone',11)->comment('手机号'); 
+            $table->char('phone',11)->comment('手机号'); 
             $table->string('address')->comment('供应商地址');   
             $table->timestamps();    
             // $table->comment('供应商表');
         });
 
         Schema::create('supplier_order',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->integer('sup_id',false,false)->comment('供应商id');
             $table->decimal('price',14,2)->comment('供应方产品单价'); 
@@ -35,6 +41,9 @@ class CreateSupplierTable extends Migration
         });
 
         Schema::create('supplier_variety',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');           
             $table->integer('supplier_id',false,false)->comment('供应商id');
             $table->integer('variety_id',false,false)->comment('产品类型id');
