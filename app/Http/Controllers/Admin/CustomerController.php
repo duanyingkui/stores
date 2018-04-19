@@ -1,4 +1,4 @@
-<?php 
+<!-- <?php 
  /**
  * Created by Sublime.
  * User: gaocuili
@@ -48,7 +48,6 @@ class CustomerController{
         return Customer::getCustomerById($customer_id);
     }
 
-
   /**
    * 根据指定ID删除客户信息->前台修改
    * @param Request $request
@@ -60,6 +59,8 @@ class CustomerController{
         return Response::json(["delCustomer" => $delCustomer]);        
     }
 
-//TODO:: 批量删除后台
+//合并测试
+//刚好 i 的搜索；v 后
+//看看姐姐家健健康康可口可乐技能
 
-}
+} -->
