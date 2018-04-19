@@ -1,4 +1,4 @@
-<!-- <?php 
+<?php 
  /**
  * Created by Sublime.
  * User: gaocuili
@@ -59,8 +59,5 @@ class CustomerController{
         return Response::json(["delCustomer" => $delCustomer]);        
     }
 
-//合并测试
-//刚好 i 的搜索；v 后
-//看看姐姐家健健康康可口可乐技能
-
-} -->
+    //test
+} 
