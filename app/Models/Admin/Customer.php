@@ -107,7 +107,16 @@ class Customer extends Model
 	    }
     }
 
-
+	/*
+     * 根据指定ID查询客户信息->前台修改
+     * @param Request $request
+     */
+    public static function getCustomerById($customer_id){
+    	$customer_data  = Customer::find($customer_id);
+      	$address_data   = Address::select('address_name','code')
+            ->where('customer_id',$customer_id)->get();
+      return Response::json(['customer' => $customer_data , 'address' => $address_data]);
+    }
 
 
 }
