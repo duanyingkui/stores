@@ -13,7 +13,7 @@
                     <el-form-item label="产品名称" prop="name">
                         <el-input v-model="editForm.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="产品列表图片" enctype="multipart/form-data">
+                    <el-form-item label="产品列表图片" enctype="multipart/form-data"  prop="img_list">
                         <el-upload
                                 action="admin/product/set_imglist"
                                 ref="uploadlist"
@@ -29,10 +29,10 @@
                                 :auto-upload="false"
                                 :on-success="imglist">
                             <el-button slot="trigger" size="small" type="primary">选择图片</el-button>
-                            <div slot="tip" class="el-upload__tip">至多上传3个jpg/png/jpeg文件，单个文件大小不能超过1M</div>
+                            <div slot="tip" class="el-upload__tip">请上传3个jpg/png/jpeg文件，单个文件大小不能超过2M</div>
                         </el-upload>
                     </el-form-item>
-                    <el-form-item label="产品首页图片">
+                    <el-form-item label="产品首页图片" prop="one_img">
                         <el-upload
                                 class="img-uploader"
                                 action="admin/product/set_imglist"
@@ -47,6 +47,7 @@
                                 :auto-upload="false"
                                 :on-success="img">
                             <i class="el-icon-plus" slot="trigger"></i>
+                            <div slot="tip" class="el-upload__tip">请上传1个jpg/png/jpeg文件，单个文件大小不能超过2M</div>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="是否启用SKU">
@@ -154,7 +155,6 @@
                         if(isNaN(this.id)){
                             console.log(self.editForm);
                             axios.post('/admin/product/add_product',self.editForm).then(function (res) {
-                                console.log(data);
                                 var data = res.data;
                                 if(data.code == 0){
                                     self.$message({

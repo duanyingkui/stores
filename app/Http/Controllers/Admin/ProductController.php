@@ -88,7 +88,7 @@ class ProductController extends Controller
      * 添加产品
      */
     public function add_product(Request $request){
-        $arr['product_name'] = $request->input('name');
+        $arr['product_name'] = trim($request->input('name'));
         $sku                 = $request->input('sku');
         $arr['unit_id']      = $request->input('unit');
         $arr['variety_id']   = $request->input('type');
@@ -99,6 +99,15 @@ class ProductController extends Controller
             $arr['is_sku']   = 1;
         }else{
             $arr['is_sku']   = 0; 
+        }
+        if($arr['product_name'] == null){
+            foreach($fileList as $file){
+                $this->deleteFile($file['name']);
+            } 
+            foreach($oneimg as $file){
+                $this->deleteFile($file['name']);
+            }
+            return responseToJson(1, '请填写完整带 * 的信息');
         }
         DB::beginTransaction();
         try{
