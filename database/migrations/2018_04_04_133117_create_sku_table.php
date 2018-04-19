@@ -14,6 +14,9 @@ class CreateSkuTable extends Migration
     public function up()
     {
         Schema::create('sku',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('name')->comment('SKU名称');
             $table->timestamps();    
@@ -21,6 +24,9 @@ class CreateSkuTable extends Migration
         });
 
         Schema::create('item',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->integer('sku_id',false,false)->comment('sku的id');
             $table->string('name')->comment('属性值');

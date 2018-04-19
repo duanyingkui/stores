@@ -14,6 +14,9 @@ class CreateProductTable extends Migration
     public function up()
     {
         Schema::create('product',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('product_name')->comment('产品名称');
             $table->integer('unit_id',false,false)->comment('产品单位id');
@@ -28,6 +31,9 @@ class CreateProductTable extends Migration
         });
 
         Schema::create('product_file',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->integer('file_id',false,false)->comment('文件id');
             $table->integer('product_id',false,false)->comment('产品id');
@@ -35,6 +41,9 @@ class CreateProductTable extends Migration
         });
 
         Schema::create('product_sku',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');           
             $table->integer('product_id',false,false)->comment('产品id');
             $table->integer('sku_id',false,false)->comment('sku的id');
@@ -43,6 +52,9 @@ class CreateProductTable extends Migration
         });
 
         Schema::create('product_unit',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');           
             $table->string('name',4)->comment('产品单位名字');
             $table->timestamps();
@@ -50,6 +62,9 @@ class CreateProductTable extends Migration
         });
 
         Schema::create('product_variety',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');           
             $table->integer('product_id',false,false)->comment('产品id');
             $table->integer('variety_id',false,false)->comment('产品类型id');

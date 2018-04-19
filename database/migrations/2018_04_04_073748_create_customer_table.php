@@ -14,18 +14,24 @@ class CreateCustomerTable extends Migration
     public function up()
     {
         Schema::create('customer',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('name',50)->comment('客户名称');
             $table->string('linkman',20)->comment('下单人(联系人)');
-            $table->string('phone',11)->comment('手机号');    
+            $table->char('phone',11)->comment('手机号');    
             $table->timestamps();    
             // $table->comment('客户表');
         });
 
         Schema::create('address',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('consignee',10)->comment('收货人');
-            $table->string('consignee_mobile',11)->comment('收货人电话号码');
+            $table->char('consignee_mobile',11)->comment('收货人电话号码');
             $table->string('address_name')->comment('地址名称');    
             $table->tinyInteger('status')->comment('地址状态（0为默认地址，1为非默认）');
             $table->integer('customer_id',false,false)->comment('客户id');

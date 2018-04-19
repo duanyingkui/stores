@@ -7,5 +7,5 @@
  */
 
 Route::group(['prefix'=>"staff", 'namespace'=>'Admin'],function(){
-
+	Route::get("list",'StaffController@');
 });
