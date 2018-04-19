@@ -59,5 +59,5 @@ class CustomerController{
         return Response::json(["delCustomer" => $delCustomer]);        
     }
 
-    //test
+    //test小白
 } 
