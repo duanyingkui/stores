@@ -18,4 +18,6 @@
 4. ionic icon：http://www.runoob.com/ionic/ionic-icon.html
 
 # 注意：每次 git push 前，必须有 git pull 操作，有冲突必须解决冲突
-*（未完，后续补充......）
+*（未完，后续补充......）*
+
+#### 好气啊
