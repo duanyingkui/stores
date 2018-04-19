@@ -15,11 +15,20 @@ use App\Models\Admin\Menu;
 
 class RoleController extends Controller
 {
-    //
+    /**
+     * [get_role_list_paginate description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     function get_role_list_paginate(Request $request){
         return Role::get_role_list_paginate($request->page,$request->pageSize);
     }
 
+    /**
+     * [edit description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     function edit(Request $request){
         $roleId = $request->id;
         $menu = Menu::get_format_menu();
@@ -32,6 +41,11 @@ class RoleController extends Controller
         return Response::json(['menu'=>$menu,'info'=>$info,'role_code'=>$role_code]);
     }
 
+    /**
+     * [edit_save description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     function edit_save(Request $request){
         $id = intval($request->id);
 //        if($id && Role::is_built_in($id)){
@@ -46,6 +60,11 @@ class RoleController extends Controller
         }
     }
 
+    /**
+     * [delete 删除方法]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     function delete(Request $request){
         $roleId = $request->id;
 

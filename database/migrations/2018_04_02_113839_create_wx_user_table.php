@@ -15,6 +15,9 @@ class CreateWxUserTable extends Migration
     {
         //
         Schema::create('wx_user',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('openid')->comment('微信openID');
             $table->string('nickname')->comment('微信昵称');

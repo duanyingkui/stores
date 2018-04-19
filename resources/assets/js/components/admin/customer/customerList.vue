@@ -16,10 +16,10 @@
             <el-button class="button"><i class="icon ion-trash-a"></i>&nbsp;批量删除</el-button>
           </el-form-item>
           <el-form-item>
-            <el-input id="input" placeholder="请输入查询内容" v-model="input10" clearable></el-input>
+            <el-input id="input" placeholder="请输入查询内容" v-model="queryData" clearable></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="button" @click="onSubmit"><i class="icon ion-search"></i>&nbsp;查询</el-button>
+            <el-button type="primary" class="button" @click="getCustomer"><i class="icon ion-search"></i>&nbsp;查询</el-button>
           </el-form-item>
         </el-form>
 
@@ -170,7 +170,7 @@
         data(){
             return {
                 tableData   : [],
-                input10     : '',
+                queryData     : '',
                 checked     : true,
                 checkList   : [],
                 page        : 1,
@@ -226,14 +226,15 @@
 //                console.log(CodeToText[value[2]])
             },
             onSubmit() {
-                console.log('subwwwmit!');
+                console.log(this.queryData);
             },
             //获取客户信息
             getCustomer(){               
                 let self = this;
                 let params = {
-                    pageSize : self.pageSize,
-                    page : self.page
+                    pageSize    : self.pageSize,
+                    page        : self.page,
+                    queryData   : self.queryData,
                 }
                 axios.get('admin/customer/list',{params:params}).then(res => {
                     self.tableData  = res.data.customer.data;
@@ -256,7 +257,6 @@
                 var phone1  = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
                 var mobile  = /\d{3}-\d{8}|\d{4}-\d{7}/;
                 var text    = /^[\u4E00-\u9FA5A-Za-z0-9]{3,20}$/;
-
                 if(!phone1.test(this.form.phone) && !mobile.test(this.form.phone)){
                     this.$message.error("手机号错误");
                 }else if(!text.test(this.form.name)){
@@ -287,7 +287,6 @@
                             console.log(err);
                         })
                     }
-
                 });
             },
             //修改客户信息
@@ -306,7 +305,6 @@
                     self.editForm.linkman   =   data.customer.linkman;
                     self.editForm.phone     =   data.customer.phone;
                     self.editForm.address   =   data.address[0]['address_name'];
-
                     var codes = data.address[0]['code'].split('/')
                     var address = ''
                     codes.forEach(function (value) {
@@ -319,7 +317,6 @@
                     console.log(err);
                 });
             },
-
             //删除客户信息
             deleteCustomer(id , phone){
                 let self = this;
@@ -345,7 +342,6 @@
                     })
                 })
             },
-
             //分页，每页显示多少条记录
             onPageSizeChange(val){
                 this.pageSize = val ;
@@ -364,5 +360,4 @@
             })
         }
     }
-
 </script>

@@ -14,10 +14,13 @@ class CreateFileTable extends Migration
     public function up()
     {
         Schema::create('file',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('file_name')->comment('文件名');
             $table->string('file_path')->comment('文件路径');
-            $table->string('phone',11)->comment('手机号');
+            $table->char('phone',11)->comment('手机号');
             $table->tinyInteger('type')->comment('0:订单文件，1：产品文件');    
             $table->timestamps();    
             // $table->comment('文件表');

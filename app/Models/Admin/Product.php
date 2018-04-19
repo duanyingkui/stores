@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: WeiYalin
+ * User: zhihuiting
  * Date: 2018/3/27
  * Time: 0:24
  */
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $table = 'product';
-    protected $fillable = ['id','product_name'];
+    protected $fillable = ['id','product_name','unit_id','variety_id','content','is_sku'];
 
     public function skus()
     {
@@ -23,7 +23,21 @@ class Product extends Model
     public function fromDateTime($value){
         return strtotime(parent::fromDateTime($value));
     }
-    public static function getOrderProduct(){
+
+    public static function getOrderProduct()
+    {
         return Product::select('id', 'product_name as value')->get();
+    }
+
+    public function files()
+    {
+        return $this->belongsToMany('App\Models\Admin\File');
+    }
+
+    /**
+     * 添加产品
+     */
+    public static function add_product($arr,$fileList){
+        return Product::create($arr)->id;
     }
 }

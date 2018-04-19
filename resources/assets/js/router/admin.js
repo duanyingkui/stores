@@ -51,11 +51,6 @@ export default new VueRouter({
             path: '/customer/list',
             component: resolve =>void(require(['../components/admin/customer/customerList.vue'], resolve))
         },
-        {
-            name: '新增客户',
-            path: '/customer/add',
-            component: resolve =>void(require(['../components/admin/customer/addCustomer.vue'], resolve))
-        },
         //用户模块
         {
             path: '/user/list',
@@ -72,6 +67,11 @@ export default new VueRouter({
         {
             path: '/role/edit',
             component: resolve => void (require(['../components/admin/user/role_edit.vue'], resolve))
+        },
+        {
+            name: '新增供应商',
+            path: '/supplier/add',
+            component: resolve =>void(require(['../components/admin/supplier/addSupplier.vue'], resolve))
         },
     ]
 })

@@ -14,9 +14,12 @@ class CreateStaffTable extends Migration
     public function up()
     {
         Schema::create('staff',function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
             $table->increments('id');
             $table->string('name',50)->comment('员工姓名');
-            $table->string('phone',11)->comment('手机号');    
+            $table->char('phone',11)->comment('手机号');    
             $table->timestamps();    
             // $table->comment('员工表');
         });
