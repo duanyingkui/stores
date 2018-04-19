@@ -92,7 +92,7 @@
                         <el-upload
                                 class="upload-demo"
                                 drag
-                                action="https://jsonplaceholder.typicode.com/posts/"
+                                action="admin/order/upload"
                                 :on-preview="handlePreview"
                                 :on-remove="handleRemove"
                                 :before-remove="beforeRemove"
@@ -106,7 +106,7 @@
                                 :file-list="fileList">
                             <i class="el-icon-upload"></i>
                             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                            <div class="el-upload__tip" slot="tip">只能上传jpg/png/zip/rar文件，且不超过500kb，超过三个文件请将之放在一个文件中压缩后上传</div>
+                            <div class="el-upload__tip" slot="tip">只能上传jpg/png/zip/rar文件，且不超过10M，超过三个文件请将之放在一个文件中压缩后上传</div>
                         </el-upload>
                     </el-col>
                 </el-row>
@@ -295,15 +295,15 @@
                 return this.$confirm(`确定移除 ${ file.name }？`)
             },
             beforeImgUpload(file) {
-                const isLt3M = file.size / 1024 / 1024 < 3;
+                const isLt3M = file.size / 1024 / 1024 < 10;
 
                 if (!isLt3M) {
-                    this.$message.error('上传文件大小不能超过3MB!');
+                    this.$message.error('上传文件大小不能超过10MB!');
                 }
                 return isLt3M;
             },
             error:function (err,file,fileList) {
-                this.$message.warning('文件上传失败！');
+                this.$message.error(file.name+'上传失败！');
             },
             //地址
             handleChange (value) {
