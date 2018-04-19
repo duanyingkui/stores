@@ -18,4 +18,7 @@ class Item extends Model
     public function fromDateTime($value){
         return strtotime(parent::fromDateTime($value));
     }
+    public static function getItem($skuId){
+        return Item::select('id as item_id','name')->where('sku_id',$skuId)->get();
+    }
 }

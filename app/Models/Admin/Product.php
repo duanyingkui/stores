@@ -23,4 +23,7 @@ class Product extends Model
     public function fromDateTime($value){
         return strtotime(parent::fromDateTime($value));
     }
+    public static function getOrderProduct(){
+        return Product::select('id', 'product_name as value')->get();
+    }
 }
