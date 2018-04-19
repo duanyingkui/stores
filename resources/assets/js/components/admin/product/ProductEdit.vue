@@ -139,12 +139,6 @@
                     type: [
                         { required: true, message: '请选择产品类型', trigger: 'change' }
                     ],
-                    img_list: [
-                        { required: true, message: '请选择产品列表图片', trigger: 'change' }
-                    ],
-                    one_img: [
-                        { required: true, message: '请选择产品首页图片', trigger: 'change' }
-                    ],
                 },
                 csrf_token: {
                     _token: document.querySelector('meta[name="csrf"]').content

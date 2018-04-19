@@ -100,7 +100,13 @@ class ProductController extends Controller
         }else{
             $arr['is_sku']   = 0; 
         }
-        if($arr['product_name'] == null || count($oneimg) < 1 || count($oneimg) < 3){
+        if($arr['product_name'] == null){
+            foreach($fileList as $file){
+                $this->deleteFile($file['name']);
+            } 
+            foreach($oneimg as $file){
+                $this->deleteFile($file['name']);
+            }
             return responseToJson(1, '请填写完整带 * 的信息');
         }
         DB::beginTransaction();
