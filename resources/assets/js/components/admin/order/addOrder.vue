@@ -289,18 +289,18 @@
                 console.log(file)
             },
             handleExceed(files, fileList) {
-                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件,超过三个文件请将之放在一个文件中压缩后上传`);
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件,超过三个文件请将之放在一个文件夹中压缩后上传`);
             },
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${ file.name }？`)
             },
             beforeImgUpload(file) {
-                const isLt3M = file.size / 1024 / 1024 < 10;
+                const isLt10M = file.size / 1024 / 1024 < 10;
 
-                if (!isLt3M) {
+                if (!isLt10M) {
                     this.$message.error('上传文件大小不能超过10MB!');
                 }
-                return isLt3M;
+                return isLt10M;
             },
             error:function (err,file,fileList) {
                 this.$message.error(file.name+'上传失败！');
