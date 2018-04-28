@@ -13,7 +13,7 @@
             <el-button class="button" @click="onAddClick"><i class="icon ion-plus-round" ></i>&nbsp;添加客户</el-button>
           </el-form-item>
            <el-form-item >
-            <el-button class="button"><i class="icon ion-trash-a"></i>&nbsp;批量删除</el-button>
+            <el-button class="button" @click="deleteCustomers"><i class="icon ion-trash-a"></i>&nbsp;批量删除</el-button>
           </el-form-item>
           <el-form-item>
             <el-input id="input" placeholder="请输入查询内容" v-model="queryData" clearable></el-input>
@@ -24,22 +24,23 @@
         </el-form>
 
         <template>
-          <el-table :data="tableData"  stripe style="width: 100%">
-                <el-table-column width="50">
+          <el-table :data="tableData"  stripe style="width: 100%" @selection-change="handleSelectionChange">
+                <!-- <el-table-column width="50">
                      <template slot-scope="scope" width="100">
                         <el-checkbox-group v-model="checkList">
                             <el-checkbox></el-checkbox>
                         </el-checkbox-group>
                   </template>
-                </el-table-column>
-                <el-table-column  type="index" width="80"></el-table-column>
-                <el-table-column prop="name" label="客户方" width="100" sortable></el-table-column>
-                <el-table-column prop="linkman" label="订单人" width="100" sortable></el-table-column>
-                <el-table-column prop="address_name" label="默认收货地址" width="180" sortable></el-table-column>
-                <el-table-column prop="phone" label="联系电话" width="130" sortable></el-table-column>
-                <el-table-column prop="created_at" label="创建时间" width="180" sortable></el-table-column>
+                </el-table-column> -->
+                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column  type="index" :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-table-column>
+                <el-table-column prop="name" label="客户方" :xs="8" :sm="6" :md="4" :lg="3" :xl="1" sortable></el-table-column>
+                <el-table-column prop="linkman" label="订单人" :xs="6" :sm="4" :md="3" :lg="2" :xl="1" sortable></el-table-column>
+                <el-table-column prop="address_name" label="默认收货地址" :xs="8" :sm="6" :md="4" :lg="3" :xl="1" sortable></el-table-column>
+                <el-table-column prop="phone" label="联系电话" :xs="8" :sm="6" :md="4" :lg="3" :xl="1" sortable></el-table-column>
+                <el-table-column prop="created_at" label="创建时间" :xs="8" :sm="6" :md="4" :lg="3" :xl="1" sortable></el-table-column>
                 <el-table-column label="操作">
-                  <template slot-scope="scope" width="60">
+                  <template slot-scope="scope" :xs="8" :sm="6" :md="4" :lg="3" :xl="1">
                         <el-button size="small" type="primary" icon="el-icon-edit"   @click="handleEdit(scope.row.id)"></el-button>
                         <el-button size="small" type="danger"  icon="el-icon-delete" @click="deleteCustomer(scope.row.id,scope.row.phone)"></el-button> 
                   </template>
@@ -172,7 +173,7 @@
                 tableData   : [],
                 queryData     : '',
                 checked     : true,
-                checkList   : [],
+                multipleSelection   : [],
                 page        : 1,
                 pageSize    : 5,
                 total       : 0,
@@ -274,7 +275,8 @@
                     let self = this;
                     if(self.test()){
                         axios.post('admin/customer/list/add',self.form).then(res => {
-                            let data = res.data;
+                            let data = res.data.addCustomer.original;
+                            console.log(res)
                             if(data.code == 0){
                                 self.getCustomer();
                                 self.$message.success("添加客户成功！");
@@ -330,14 +332,46 @@
                     type: 'warning'
                 }).then(()=>{
                     axios.get("admin/customer/list/delete",{params:params}).then(res => {
-                        console.log(res.data );
-                        var data = res.data;
+                        var data = res.data.delCustomer.original;
                         if (data.code == 0) {
                             self.$message.success("删除成功");
                             self.getCustomer();
                         }else{
                             self.$message.error("删除失败");
                             self.getCustomer();
+                        }
+                    })
+                })
+            },
+            handleSelectionChange(val) {
+                var self = this;
+                self.multipleSelection = [];
+                console.log(val);
+                val.forEach(function(value){
+                    self.multipleSelection.push(value.id);
+                });
+            },
+            //删除多条记录
+            deleteCustomers(){
+                if(this.multipleSelection.length == 0){
+                    self.$message.warning("没有行被选中!");
+                };
+                let self = this;
+                let params = {
+                    customerIds : self.multipleSelection
+                }
+                self.$confirm('确认删除选中的'+self.multipleSelection.length+'条客户信息吗？','提示',{
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(()=>{
+                    axios.post("admin/customer/list/deleteCustomers",params).then(res => {
+                        var data = res.data;
+                        if (data.code == 0) {
+                            self.$message.success("删除成功");
+                            self.getCustomer();
+                        }else{
+                            self.$message.error(data.msg);
                         }
                     })
                 })
