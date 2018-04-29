@@ -47,6 +47,11 @@ export default new VueRouter({
             component: resolve =>void(require(['../components/admin/order/orderList.vue'], resolve))
         },
         {
+            name: '订单文件',
+            path: '/order/file',
+            component: resolve =>void(require(['../components/admin/order/orderFile.vue'], resolve))
+        },
+        {
             name: '客户列表',
             path: '/customer/list',
             component: resolve =>void(require(['../components/admin/customer/customerList.vue'], resolve))

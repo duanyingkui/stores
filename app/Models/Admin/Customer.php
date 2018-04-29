@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 use Log;
 use App\Models\Admin\Address;
 use App\Models\Admin\User;
-use App\Models\Admin\Customer;
 use Illuminate\Support\Facades\DB;
 use Response;
 

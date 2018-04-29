@@ -185,4 +185,13 @@ class OrderController extends Controller
             return responseToJson(5, '(' . $old . ')文件保存出错！');
         }
     }
+
+    function getFiles(Request $request){
+        $pageSize = $request->input('pageSize');
+        $files = Files::getFiles($pageSize);
+        if($files)
+            return responseToJson(0, 'success', $files);
+        else
+            return responseToJson(1, 'failed！');
+    }
 }
