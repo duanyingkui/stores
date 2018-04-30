@@ -1,3 +1,4 @@
+
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
@@ -35,6 +36,12 @@ export default new VueRouter({
             name: '编辑产品',
             path: '/product/edit',
             component: resolve => void(require(['../components/admin/product/ProductEdit.vue'], resolve))
+        },
+        {
+
+            name: '产品列表',
+            path: '/product/list',
+            component: resolve => void(require(['../components/admin/product/ProductList.vue'], resolve))
         },
         {
             name: '新增订单',
