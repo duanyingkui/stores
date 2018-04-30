@@ -46,6 +46,7 @@ class Files extends Model
             ->leftJoin('shop_order', 'shop_order_file.order_id', '=', 'shop_order.id')
             ->where('file.type',0)
             ->select('file.*','shop_order.order_number')
+            ->orderBy('shop_order.order_number')
             ->paginate($pageSize);
         return $files;
     }

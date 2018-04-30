@@ -10,6 +10,7 @@
         </div>
         <template>
             <el-table
+                    :span-method="arraySpanMethod"
                     :data="tableData"
                     stripe
                     style="width: 100%">
@@ -33,10 +34,10 @@
                 </el-table-column>
                 <el-table-column
                         label="操作"
-                        width="100">
+                        width="200">
                     <template slot-scope="scope">
-                        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                        <el-button type="text" size="small">编辑</el-button>
+                        <el-button @click="handleClick(scope.row)" size="small" type="primary">下载</el-button>
+                        <el-button size="small" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -63,6 +64,21 @@
             }
         },
         methods : {
+            arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+                if (columnIndex === 0) {
+                    if (rowIndex % 2 === 0) {
+                        return {
+                            rowspan: 2,
+                            colspan: 1
+                        };
+                    } else {
+                        return {
+                            rowspan: 0,
+                            colspan: 0
+                        };
+                    }
+                }
+            },
             //分页，每页显示多少条记录
             onPageSizeChange(val){
                 this.pageSize = val ;
@@ -83,11 +99,12 @@
                     page        : self.page
                 }
                 axios.get('/admin/order/getFiles',{params:params}).then(function (res) {
-                    var data = res.data
+                    var data = res.data;
                     if(data.code == 0){
-                        console.log(data.result)
-                        self.tableData = data.result.data
-                        self.total     = data.result.total
+                        console.log(data.result);
+                        self.handlingData(data.result.data);
+                        self.tableData = data.result.data;
+                        self.total     = data.result.total;
                     }else{
                         self.$message({
                             type: 'error',
@@ -97,6 +114,19 @@
                 }, function (err) {
                     console.log(err);
                 })
+            },
+            handlingData(data){
+                var map = new Map();
+                var order_number = '';
+                var count = 0,index = 0;
+                data.forEach(function (value) {
+                    if(order_number != value.order_number){
+                        order_number = value.order_number;
+                        count = 1;
+                    }else{
+                        //TODO::
+                    }
+                });
             }
         },
         mounted(){

@@ -174,6 +174,7 @@
                 queryData     : '',
                 checked     : true,
                 multipleSelection   : [],
+                multipleSelection2  : [],
                 page        : 1,
                 pageSize    : 5,
                 total       : 0,
@@ -346,9 +347,11 @@
             handleSelectionChange(val) {
                 var self = this;
                 self.multipleSelection = [];
+                self.multipleSelection2= [];
                 console.log(val);
                 val.forEach(function(value){
                     self.multipleSelection.push(value.id);
+                    self.multipleSelection2.push(value.phone);
                 });
             },
             //删除多条记录
@@ -358,7 +361,8 @@
                 };
                 let self = this;
                 let params = {
-                    customerIds : self.multipleSelection
+                    customerIds : self.multipleSelection,
+                    customerPhones : self.multipleSelection2
                 }
                 self.$confirm('确认删除选中的'+self.multipleSelection.length+'条客户信息吗？','提示',{
                     confirmButtonText: '确定',

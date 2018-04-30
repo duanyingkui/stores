@@ -59,5 +59,12 @@ class CustomerController{
         return Response::json(["delCustomer" => $delCustomer]);        
     }
 
-    //test小白请求
+    function deleteCustomers(Request $request){
+        $customerIds  = $request->input('customerIds');
+        $customerPhones  = $request->input('customerPhones');
+        if(Customer::deleteCustomers($customerIds,$customerPhones))
+            return responseToJson(0,'success');
+        else
+            return responseToJson(1,'failed');
+    }
 } 
