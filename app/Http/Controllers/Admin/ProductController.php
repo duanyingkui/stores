@@ -132,5 +132,26 @@ class ProductController extends Controller
             return responseToJson(1,"add_product error!");
         }
     }
-
+    
+    /**
+     * 产品列表
+     */
+    function get_product_list_paginate(Request $request){
+        $page = intval($request->page);
+        $pageSize = intval($request->pageSize);
+        $arr = $request->selt_product;
+        $name = isset($arr['name']) ? $arr['name'] : null;
+        // dd($arr["name"]);
+        if($name == null){
+            $product = Product::get_product_list_paginate($page,$pageSize,null);
+        }else{
+            $product = Product::get_product_list_paginate($page,$pageSize,$arr);
+        }
+        return responseToJson(0,$product);
+        if($product){
+            return responseToJson(0,$product);
+        }else{
+            return responseToJson(1,"get_product_list error!");
+        }
+    }
 }
