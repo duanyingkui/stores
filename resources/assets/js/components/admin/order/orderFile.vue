@@ -13,19 +13,18 @@
                     :span-method="arraySpanMethod"
                     :data="tableData"
                     stripe
+                    @selection-change="handleSelectionChange"
                     style="width: 100%">
-                <el-table-column
-                        type="index"
-                        width="50">
-                </el-table-column>
-                <el-table-column
-                        prop="file_name"
-                        label="文件名"
-                        width="180">
+                <el-table-column type="selection" width="55">
                 </el-table-column>
                 <el-table-column
                         prop="order_number"
                         label="订单编号"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="file_name"
+                        label="文件名"
                         width="180">
                 </el-table-column>
                 <el-table-column
@@ -57,18 +56,24 @@
     export default{
         data() {
             return{
-                tableData: [],
-                page     : 1,
-                pageSize : 5,
-                total    : 0,
+                tableData   : [],
+                tableMerge  : {},
+                page        : 1,
+                pageSize    : 5,
+                total       : 0,
+                multipleSelection: [],
             }
         },
         methods : {
+            handleSelectionChange(val) {
+                console.log(val);
+                this.multipleSelection = val;
+            },
             arraySpanMethod({ row, column, rowIndex, columnIndex }) {
-                if (columnIndex === 0) {
-                    if (rowIndex % 2 === 0) {
+                if (columnIndex === 0 || columnIndex === 1) {
+                    if (this.tableMerge.has(rowIndex)) {
                         return {
-                            rowspan: 2,
+                            rowspan: this.tableMerge.get(rowIndex),
                             colspan: 1
                         };
                     } else {
@@ -118,15 +123,19 @@
             handlingData(data){
                 var map = new Map();
                 var order_number = '';
-                var count = 0,index = 0;
+                var gIndex = 0,index = 0,count;
                 data.forEach(function (value) {
                     if(order_number != value.order_number){
                         order_number = value.order_number;
                         count = 1;
+                        index = gIndex;
                     }else{
-                        //TODO::
+                        count++;
                     }
+                    map.set(index,count);
+                    gIndex++;
                 });
+                this.tableMerge = map;
             }
         },
         mounted(){
