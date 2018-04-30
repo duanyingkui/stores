@@ -6,7 +6,6 @@
                 <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
                 <el-breadcrumb-item>订单管理</el-breadcrumb-item>
                 <el-breadcrumb-item>订单列表</el-breadcrumb-item>
-
             </el-breadcrumb>
         </div>
         order/list

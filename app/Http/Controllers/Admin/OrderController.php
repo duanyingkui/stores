@@ -12,12 +12,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Address;
 use App\Models\Admin\Customer;
+use App\Models\Admin\Files;
 use App\Models\Admin\Item;
 use App\Models\Admin\Order;
+use App\Models\Admin\Order_file;
 use App\Models\Admin\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use DB;
 
 class OrderController extends Controller
 {
@@ -29,9 +31,7 @@ class OrderController extends Controller
     function getDefaultAddress(Request $request){
         $id = $request->input('id');
         if ($id) {
-            $address = Address::where('customer_id',$id)
-                ->where('status',0)
-                ->first();
+            $address = Address::getDefaultAddress($id);
             if($address){
                 return responseToJson(0,'success',$address);
             }
@@ -40,7 +40,7 @@ class OrderController extends Controller
     }
 
     function getProduct(){
-        $prodects = Product::select('id', 'product_name as value')->get();
+        $prodects = Product::getOrderProduct();
         return responseToJson(0,'success',$prodects);
     }
 
@@ -50,7 +50,7 @@ class OrderController extends Controller
             $skus = Product::find($id)->skus;
             foreach($skus as $key => $sku){
                 $skus[$key]->select = '';
-                $skus[$key]->items = Item::select('id as item_id','name')->where('sku_id',$sku->id)->get();
+                $skus[$key]->items = Item::getItem($sku->id);
             }
             return responseToJson(0,'success',$skus);
         }
@@ -59,7 +59,7 @@ class OrderController extends Controller
 
     function getAddress(Request $request){
         $id      = $request->input('id');
-        $address = Address::where('customer_id',$id)->get();
+        $address = Address::getAddress($id);
         if($address){
             return responseToJson(0,'success',$address);
         }
@@ -69,17 +69,9 @@ class OrderController extends Controller
     function setAddress(Request $request){
         $id          = $request->input('id');
         $customer_id = $request->input('customer_id');
-        $address = Address::find($id);
-        DB::beginTransaction();
-        try{
-            Address::where('customer_id',$customer_id)->where('status',0)->update(['status'=>1]);
-            $address->status = 0;
-            $address->save();
-            DB::commit();
+        if(Address::setAddress($id,$customer_id)){
             return responseToJson(0,'success');
-        }catch (Exception $e){
-            DB::rollback();
-            Log::info($e);
+        }else{
             return responseToJson(1,'failed');
         }
     }
@@ -113,8 +105,6 @@ class OrderController extends Controller
         return responseToJson(0,'success');
     }
 
-    
-
     function addOrder(Request $request){
         $cus_id             = $request->input('customer_id');
         $p_id               = $request->input('product_id');
@@ -125,6 +115,7 @@ class OrderController extends Controller
         $total              = $request->input('should_pay');
         $deposit            = $request->input('fact_pay');
         $sku_item_id        = $request->input('item_ids');
+        $files              = $request->input('files');
 
         $order_number       = millisecond().str_rand(4);
 
@@ -149,12 +140,58 @@ class OrderController extends Controller
             $data['status'] = 1;
         }
 
-        Log::info($data);
-        $order = Order::create($data);
-
-        if($order)
+        DB::beginTransaction();
+        try{
+            $order = Order::create($data);
+            foreach ($files as $file){
+                $fileData = ['file_path' => $file['name'],'file_name' => $file['original'],'type' => 0];
+                $fileRes = Files::create($fileData);
+                Order_file::create(['order_id' => $order->id,'file_id' => $fileRes->id]);
+            }
+            DB::commit();
             return responseToJson(0,'success');
-        else
+        }catch (Exception $e){
+            DB::rollback();
+            Log::info($e);
             return responseToJson(1,'failed');
+        }
+    }
+
+    function upload(Request $request){
+        if (!$request->hasFile('file')) {
+            return responseToJson(1, '上传文件为空！');
+        }
+        $file = $request->file('file');
+        $old = $file->getClientOriginalName();
+        if (!$file->isValid()) {
+            return responseToJson(2, '(' . $old . ')文件上传出错！');
+        }
+        $size = $file->getSize();
+        $maxSize = 10 * 1024 * 1024;
+        if ($size > $maxSize) {
+            return responseToJson(3, '单个文件不能超过10M！');
+        }
+        $destPath = storage_path('app'.DIRECTORY_SEPARATOR.'orderFiles');
+        if (!file_exists($destPath))
+            mkdir($destPath, 0777, true);
+        $ext = $file->getClientOriginalExtension();
+        $filename = create_uuid(). '.' . $ext;
+        if($ext != 'rar' && $ext != 'zip' && $ext != 'jpg' && $ext != 'jpeg' && $ext != 'png')
+            return responseToJson(4, '(' . $old . ')文件格式错误！');
+        if ($file->move($destPath, $filename)) {
+            $file_info = array("original" => $old,"name" => $filename);
+            return responseToJson(0, 'success', $file_info);
+        } else {
+            return responseToJson(5, '(' . $old . ')文件保存出错！');
+        }
+    }
+
+    function getFiles(Request $request){
+        $pageSize = $request->input('pageSize');
+        $files = Files::getFiles($pageSize);
+        if($files)
+            return responseToJson(0, 'success', $files);
+        else
+            return responseToJson(1, 'failed！');
     }
 }

@@ -92,8 +92,7 @@
                         <el-upload
                                 class="upload-demo"
                                 drag
-                                action="https://jsonplaceholder.typicode.com/posts/"
-                                :on-preview="handlePreview"
+                                action="admin/order/upload"
                                 :on-remove="handleRemove"
                                 :before-remove="beforeRemove"
                                 :before-upload="beforeImgUpload"
@@ -103,10 +102,10 @@
                                 multiple
                                 :limit="3"
                                 :on-exceed="handleExceed"
-                                :file-list="fileList">
+                                :on-success="success">
                             <i class="el-icon-upload"></i>
                             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                            <div class="el-upload__tip" slot="tip">只能上传jpg/png/zip/rar文件，且不超过500kb，超过三个文件请将之放在一个文件中压缩后上传</div>
+                            <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/zip/rar文件，且不超过10M，超过三个文件请将之放在一个文件夹中压缩后上传</div>
                         </el-upload>
                     </el-col>
                 </el-row>
@@ -229,8 +228,9 @@
                 csrf_token: {
                     _token: document.querySelector('meta[name="csrf"]').content
                 },
-                fileList: [],
                 ruleForm: {
+                    files           : [],
+
                     customer_id     : 0,
                     product_id      : 0,
                     customer_name   : '',
@@ -283,27 +283,41 @@
         methods : {
             //上传文件
             handleRemove(file, fileList) {
-                console.log(file, fileList)
-            },
-            handlePreview(file) {
-                console.log(file)
+                let files = []
+                fileList.forEach(function (value) {
+                    if(value.response)
+                        files.push(value.response.result)
+                })
+                this.ruleForm.files = files;
             },
             handleExceed(files, fileList) {
-                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件,超过三个文件请将之放在一个文件中压缩后上传`);
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件,超过三个文件请将之放在一个文件夹中压缩后上传`);
             },
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${ file.name }？`)
             },
             beforeImgUpload(file) {
-                const isLt3M = file.size / 1024 / 1024 < 3;
+                console.log(file.type)
+                const isPNG = file.type === 'image/png';
+                const isJPEG = file.type === 'image/jpeg';
+                const isZIP = file.type === 'application/x-zip-compressed';
+                var ext = file.name.split('.').pop().toLowerCase();
+                const isRAR = ext === 'rar';
+                const isLt10M = file.size / 1024 / 1024 < 10;
 
-                if (!isLt3M) {
-                    this.$message.error('上传文件大小不能超过3MB!');
+                if (!isLt10M) {
+                    this.$message.error('上传文件大小不能超过10MB!');
                 }
-                return isLt3M;
+                return isLt10M && (isPNG || isJPEG || isZIP || isRAR);
+            },
+            success:function (res,file) {
+                if(res.code == 0)
+                    this.ruleForm.files.push(res.result);
+                else
+                    this.$message.warning(file.name+'-文件上传失败,请重新上传');
             },
             error:function (err,file,fileList) {
-                this.$message.warning('文件上传失败！');
+                this.$message.error(file.name+'上传失败！');
             },
             //地址
             handleChange (value) {
@@ -316,7 +330,6 @@
                 var restaurants = this.customs
                 var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
                 // 调用 callback 返回建议列表的数据
-                console.log(results)
                 if(results.length == 0){
                     this.customerStatus = false;
                     this.default_address = {
@@ -457,7 +470,6 @@
                 if(item.id){
                     axios.post('/admin/order/getSku',{ id : self.ruleForm.product_id }).then(function (res) {
                         var data = res.data
-                        console.log(data.result)
                         if(data.code == 0){
                             self.skus = data.result
                         }else{
@@ -674,7 +686,6 @@
                     })
                     status = false
                 }else if(!reg_num.test(this.ruleForm.should_pay) || !reg_num.test(this.ruleForm.fact_pay)){
-                    console.log(this.ruleForm.should_pay)
                     this.$message({
                         showClose: true,
                         message: '付款只能填数字',
@@ -714,7 +725,6 @@
             submitForm() {
                 var self = this
                 if(self.test()){
-                    console.log(self.ruleForm)
                     axios.post('/admin/order/addOrder',self.ruleForm).then(function (res) {
                         var data = res.data
                         if(data.code == 0){

@@ -24,6 +24,11 @@ class Product extends Model
         return strtotime(parent::fromDateTime($value));
     }
 
+    public static function getOrderProduct()
+    {
+        return Product::select('id', 'product_name as value')->get();
+    }
+
     public function files()
     {
         return $this->belongsToMany('App\Models\Admin\File');

@@ -10,6 +10,7 @@ namespace App\Models\Admin;
 
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Files extends Model
 {
@@ -39,4 +40,14 @@ class Files extends Model
             $add_file->products()->attach($product_id);
         }
     }
+
+    public static function getFiles($pageSize){
+        $files = DB::table('file')->leftJoin('shop_order_file', 'file.id', '=', 'shop_order_file.file_id')
+            ->leftJoin('shop_order', 'shop_order_file.order_id', '=', 'shop_order.id')
+            ->where('file.type',0)
+            ->select('file.*','shop_order.order_number')
+            ->paginate($pageSize);
+        return $files;
+    }
+
 }
