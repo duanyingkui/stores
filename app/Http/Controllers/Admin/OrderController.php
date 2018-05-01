@@ -188,9 +188,31 @@ class OrderController extends Controller
 
     function getFiles(Request $request){
         $pageSize = $request->input('pageSize');
-        $files = Files::getFiles($pageSize);
+        $queryData = $request->input('queryData');
+        $files = Files::getFiles($pageSize,$queryData);
         if($files)
             return responseToJson(0, 'success', $files);
+        else
+            return responseToJson(1, 'failed！');
+    }
+
+    function deleteFile(Request $request){
+        $fileId  = $request->input('fileId');
+        $orderId = $request->input('orderId');
+        $fileName= $request->input('fileName');
+        $res     = Files::deleteFile($fileId,$orderId,$fileName);
+        if($res)
+            return responseToJson(0, 'success');
+        else
+            return responseToJson(1, 'failed！');
+    }
+
+    function deleteFiles(Request $request){
+        $orderIds  = $request->input('orderIds');
+        $fileNames = $request->input('fileNames');
+        $res     = Files::deleteFiles($orderIds,$fileNames);
+        if($res)
+            return responseToJson(0, 'success');
         else
             return responseToJson(1, 'failed！');
     }

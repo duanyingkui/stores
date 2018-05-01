@@ -8,11 +8,21 @@
                 <el-breadcrumb-item>文件列表</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
+        <el-form :inline="true" class="demo-form-inline">
+            <el-form-item >
+                <el-button class="button" @click="deleteFiles" type="danger"><i class="icon ion-trash-a"></i>&nbsp;批量删除</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-input id="input" placeholder="请输入订单编号" v-model.trim="queryData" clearable></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" class="button" @click="getData"><i class="icon ion-search"></i>&nbsp;查询</el-button>
+            </el-form-item>
+        </el-form>
         <template>
             <el-table
                     :span-method="arraySpanMethod"
                     :data="tableData"
-                    stripe
                     @selection-change="handleSelectionChange"
                     style="width: 100%">
                 <el-table-column type="selection" width="55">
@@ -36,7 +46,7 @@
                         width="200">
                     <template slot-scope="scope">
                         <el-button @click="handleClick(scope.row)" size="small" type="primary">下载</el-button>
-                        <el-button size="small" type="danger">删除</el-button>
+                        <el-button @click="deleteFile(scope.row)" size="small" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -59,15 +69,20 @@
                 tableData   : [],
                 tableMerge  : {},
                 page        : 1,
-                pageSize    : 5,
+                pageSize    : 10,
                 total       : 0,
                 multipleSelection: [],
+                queryData   : '',
             }
         },
         methods : {
             handleSelectionChange(val) {
-                console.log(val);
-                this.multipleSelection = val;
+                let self = this;
+                self.multipleSelection = [];
+                val.forEach(function (value) {
+                    if(self.multipleSelection.indexOf(value.order_id) < 0)
+                        self.multipleSelection.push(value.order_id);
+                });
             },
             arraySpanMethod({ row, column, rowIndex, columnIndex }) {
                 if (columnIndex === 0 || columnIndex === 1) {
@@ -101,8 +116,10 @@
                 var self = this
                 let params = {
                     pageSize    : self.pageSize,
-                    page        : self.page
-                }
+                    page        : self.page,
+                    queryData   : self.queryData
+                };
+                console.log(self.queryData);
                 axios.get('/admin/order/getFiles',{params:params}).then(function (res) {
                     var data = res.data;
                     if(data.code == 0){
@@ -115,6 +132,58 @@
                             type: 'error',
                             message: data.msg
                         })
+                    }
+                }, function (err) {
+                    console.log(err);
+                })
+            },
+            deleteFile(row){
+                var self = this;
+                var id = row.id,order_id = row.order_id,file_name = row.file_path;
+                axios.post('/admin/order/deleteFile',{fileId:id,orderId:order_id,fileName:file_name}).then(function (res) {
+                    var data = res.data;
+                    if(data.code == 0){
+                        self.$message({
+                            type: 'success',
+                            message: data.msg
+                        });
+                        self.getData();
+                    }else{
+                        self.$message({
+                            type: 'error',
+                            message: data.msg
+                        });
+                    }
+                }, function (err) {
+                    console.log(err);
+                })
+            },
+            deleteFiles(){
+                if(this.multipleSelection.length === 0){
+                    this.$message({
+                        message: '请选择先文件'
+                    });
+                    return;
+                }
+                let self = this;
+                let fileNames = [];
+                self.tableData.forEach(function (value) {
+                    if(self.multipleSelection.indexOf(value.order_id) >= 0)
+                        fileNames.push(value.file_path);
+                });
+                axios.post('/admin/order/deleteFiles',{orderIds:self.multipleSelection,fileNames:fileNames}).then(function (res) {
+                    var data = res.data;
+                    if(data.code == 0){
+                        self.$message({
+                            type: 'success',
+                            message: data.msg
+                        });
+                        self.getData();
+                    }else{
+                        self.$message({
+                            type: 'error',
+                            message: data.msg
+                        });
                     }
                 }, function (err) {
                     console.log(err);
