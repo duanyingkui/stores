@@ -20,4 +20,5 @@ Route::group(['prefix' => 'order', 'namespace'=>'Admin'], function () {
     Route::get('getFiles','OrderController@getFiles');
     Route::post('deleteFile','OrderController@deleteFile');
     Route::post('deleteFiles','OrderController@deleteFiles');
+    Route::get('downFile','OrderController@downFile');
 });

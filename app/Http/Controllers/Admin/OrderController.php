@@ -216,4 +216,16 @@ class OrderController extends Controller
         else
             return responseToJson(1, 'failed！');
     }
+
+    function downFile(Request $request){
+        $fileName  = $request->input('fileName');
+        $filePath  = $request->input('filePath');
+        Log::info($fileName);
+        Log::info($filePath);
+        $path = storage_path('app'.DIRECTORY_SEPARATOR.'orderFiles'.DIRECTORY_SEPARATOR.$filePath);
+        if(file_exists($path))
+            return response()->download($path,$fileName);
+        else
+            return "<div style='width: 100%;text-align: center;font-size: 50px;color: red'>404 NOT FOUND</div>";
+    }
 }

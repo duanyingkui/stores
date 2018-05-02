@@ -45,7 +45,7 @@
                         label="操作"
                         width="200">
                     <template slot-scope="scope">
-                        <el-button @click="handleClick(scope.row)" size="small" type="primary">下载</el-button>
+                        <el-button @click="handleClick(scope.row.file_name,scope.row.file_path)" size="small" type="primary">下载</el-button>
                         <el-button @click="deleteFile(scope.row)" size="small" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
@@ -109,11 +109,11 @@
                 this.page = val;
                 this.getData();
             },
-            handleClick(row) {
-                console.log(row);
+            handleClick(fileName,filePath) {
+                window.location.href = "/admin/order/downFile?fileName=" + fileName +"&filePath="+filePath;
             },
             getData(){
-                var self = this
+                var self = this;
                 let params = {
                     pageSize    : self.pageSize,
                     page        : self.page,
@@ -135,7 +135,7 @@
                     }
                 }, function (err) {
                     console.log(err);
-                })
+                });
             },
             deleteFile(row){
                 var self = this;
