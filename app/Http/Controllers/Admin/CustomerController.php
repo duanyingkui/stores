@@ -64,6 +64,7 @@ class CustomerController{
         return Response::json(["delCustomer" => $delCustomer]);        
     }
 
+
     /**
      * @Author    Cion
      * @DateTime  2018-04-20
@@ -71,13 +72,11 @@ class CustomerController{
      * @param     Request     $request [description]
      */
     function deleteCustomers(Request $request){
-        $customerIds    = $request->input('customerIds'); 
-        $customerPhones = $request->input('customerPhones');
-
-        if(Customer::delCustomersId($customerIds,$customerPhones))
-            return responseToJson(1,"success");
-        else{
-            return responseToJson(0,"failed");
-        }        
+        $customerIds  = $request->input('customerIds');
+        $customerPhones  = $request->input('customerPhones');
+        if(Customer::deleteCustomers($customerIds,$customerPhones))
+            return responseToJson(0,'success');
+        else
+            return responseToJson(1,'failed');
     }
 } 

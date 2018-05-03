@@ -18,4 +18,8 @@ class Order extends Model
     public function fromDateTime($value){
         return strtotime(parent::fromDateTime($value));
     }
+
+    public function files(){
+        return $this->belongsToMany('App\Models\Admin\Files','shop_order_file','order_id','file_id');
+    }
 }

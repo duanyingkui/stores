@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 use Log;
 use App\Models\Admin\Address;
 use App\Models\Admin\User;
-use App\Models\Admin\Customer;
 use Illuminate\Support\Facades\DB;
 use Response;
 
@@ -161,5 +160,20 @@ class Customer extends Model
       	$address_data   = Address::select('address_name','code')
             ->where('customer_id',$customer_id)->get();
       return Response::json(['customer' => $customer_data , 'address' => $address_data]);
+    }
+
+    public static function deleteCustomers($customerIds,$customerPhones){
+        DB::beginTransaction();
+        try{
+            DB::table('customer')->delete($customerIds);
+            DB::table('address')->whereIn('customer_id',$customerIds)->delete();
+            DB::table('user')->whereIn('name',$customerPhones)->update(['status' => 1]);
+            DB::commit();
+            return true;
+        }catch (\Exception $e){
+            Log::info($e);
+            DB::rollback();
+            return false;
+        }
     }
 }

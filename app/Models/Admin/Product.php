@@ -40,4 +40,35 @@ class Product extends Model
     public static function add_product($arr,$fileList){
         return Product::create($arr)->id;
     }
+
+    /**
+     * 产品列表
+     * 搜索
+     */
+    public static function get_product_list_paginate($page,$pageSize,$arr){
+        $total = Product::count();
+        if($arr == null){
+            $product = Product::skip(($page-1)*$pageSize)
+                ->take($pageSize)
+                ->orderBy('id','desc')
+                ->get();
+        }else{
+            $name = $arr['name'];
+            if($name != ''){
+                $query->where('name',$name);
+            }
+            $product = Product::skip(($page-1)*$pageSize)
+                ->take($pageSize)
+                ->orderBy('id','desc')
+                ->get();
+        }
+        return ['total'=>$total,'product'=>$product];        
+    }
+
+    // /**
+    //  * 搜索 产品列表
+    //  */
+    // public static function get_list($page,$pageSize,$arr){
+        
+    // }
 }
