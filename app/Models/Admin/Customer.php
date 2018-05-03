@@ -51,6 +51,18 @@ class Customer extends Model
         return $address;
     }
 
+    /**
+     * @Author    gaocuili
+     * @DateTime  2018-04-20
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [version]
+     * @param     [type]      $name      客户方
+     * @param     [type]      $linkman   订单人
+     * @param     [type]      $phone     联系方式
+     * @param     [type]      $address_n 详细地址
+     * @param     [type]      $code      省市区的code代码
+     */
     public static function addCustomer($name,$linkman,$phone,$address_n,$code){
     	$customer   = new Customer;
         $address    = new Address;
@@ -89,6 +101,12 @@ class Customer extends Model
           }
     }
 
+    /**
+     * @Author    gaocuili
+     * @DateTime  2018-04-20
+     * 删除指定用户
+     * @param     [type]      $customer_id 客户ID
+     */
     public static function delCustomer($customer_id,$user){
     	DB::beginTransaction();
 	    $delCustomer  = Customer::where('id',$customer_id)
@@ -107,9 +125,36 @@ class Customer extends Model
 	    }
     }
 
-	/*
-     * 根据指定ID查询客户信息->前台修改
-     * @param Request $request
+    /**
+     * @Author    Cion
+     * @DateTime  2018-04-20
+     * 批量删除
+     * @param     [type]      $customer_id 客户ID，数组
+     */
+    public static function delCustomersId($customerIds,$customerPhones){
+        DB::beginTransaction();
+        try {
+            DB::table('customer')->delete($customerIds);
+            DB::table('address')->whereIn('customer_id',$customerIds)->delete();
+            DB::table('user')->whereIn('name',$customerPhones)->update([ 'status' => 1 ]);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            Log::info($e);
+            DB::rollback();
+            return false;
+        }
+
+    }
+    
+
+	/**
+     * @Author    gaocuili
+     * @DateTime  2018-04-20
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [version]
+     * @param     [type]      $customer_id 客户ID
      */
     public static function getCustomerById($customer_id){
     	$customer_data  = Customer::find($customer_id);
@@ -117,6 +162,4 @@ class Customer extends Model
             ->where('customer_id',$customer_id)->get();
       return Response::json(['customer' => $customer_data , 'address' => $address_data]);
     }
-
-
 }

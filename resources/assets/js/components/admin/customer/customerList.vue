@@ -51,7 +51,8 @@
                 @size-change="onPageSizeChange"
                 @current-change="onPageChange"
                 :current-page="page"
-                :page-sizes="[5, 10, 20, 50, 100]"
+                :
+                ="[5, 10, 20, 50, 100]"
                 :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total">
@@ -171,16 +172,18 @@
         data(){
             return {
                 tableData   : [],
-                queryData     : '',
+                queryData   : '',
                 checked     : true,
-                multipleSelection   : [],
                 page        : 1,
                 pageSize    : 5,
                 total       : 0,
-                dialogFormVisible: false,
-                editDialogVisible:false,
-                formLading  : false,
                 saving      : false,
+                formLading  : false,
+
+                multipleSelectionId    : [],
+                multipleSelectionPhone : [],
+                dialogFormVisible   : false,
+                editDialogVisible   : false,
                 form:{
                     name    : '',
                     linkman : '',
@@ -196,8 +199,8 @@
                     address : '',
                     detailedAddress : '',
                 },
-                addressKey: null,
-                addresses:[],
+                addressKey  : null,
+                addresses   :[],
                 rules: {
                     name    : [
                         { required: true, message: '请输入名称', trigger: 'blur' },
@@ -345,29 +348,31 @@
             },
             handleSelectionChange(val) {
                 var self = this;
-                self.multipleSelection = [];
+                self.multipleSelectionId = [];
                 console.log(val);
                 val.forEach(function(value){
-                    self.multipleSelection.push(value.id);
+                    self.multipleSelectionId.push(value.id);
                 });
             },
             //删除多条记录
             deleteCustomers(){
-                if(this.multipleSelection.length == 0){
+                if(this.multipleSelectionId.length == 0){
                     self.$message.warning("没有行被选中!");
                 };
                 let self = this;
                 let params = {
-                    customerIds : self.multipleSelection
+                    customerIds : self.multipleSelectionId,
+                    customerPhones : self.multipleSelectionPhone
                 }
-                self.$confirm('确认删除选中的'+self.multipleSelection.length+'条客户信息吗？','提示',{
+                self.$confirm('确认删除选中的'+self.multipleSelectionId.length+'条客户信息吗？','提示',{
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(()=>{
                     axios.post("admin/customer/list/deleteCustomers",params).then(res => {
+                        console.log(res.data);
                         var data = res.data;
-                        if (data.code == 0) {
+                        if (data.code == 1) {
                             self.$message.success("删除成功");
                             self.getCustomer();
                         }else{

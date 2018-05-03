@@ -14,9 +14,9 @@ use Redirect;
 
 class CustomerController{
 
-  /*
-    ORM模型，获取客户信息
-  */
+    /*
+     *ORM模型，获取客户信息
+     */
     function getAllCustomer(Request $request){
 
         $pageSize   = $request->input('pageSize', 5);
@@ -25,9 +25,11 @@ class CustomerController{
         return Response::json(['customer' => $address]);
     }
 
-  /*
-    ORM模型，添加客户信息
-  */
+    /**
+     * @Author    Cion
+     * @DateTime  2018-04-30
+     * @param     Request     $request [description]
+     */
     function addCustomer(Request $request){
 
         $name         = $request->input('name','');
@@ -39,19 +41,22 @@ class CustomerController{
         return Response::json(["addCustomer" => $addCustomer]);        
     }
 
-    /*
-     * 根据指定ID查询客户信息->前台修改
-     * @param Request $request
+    /**
+     * @Author    Cion
+     * @DateTime  2018-04-20
+     * @copyright 根据指定ID查询客户信息->前台修改
+     * @param     Request     $request 
      */
     function getCustomer(Request $request){
         $customer_id    = $request->input('id');
         return Customer::getCustomerById($customer_id);
     }
 
-  /**
-   * 根据指定ID删除客户信息->前台修改
-   * @param Request $request
-   */
+    /**
+     * @Author    Cion
+     * 根据指定ID删除客户信息->前台修改
+     * @param Request $request
+     */
     function delCustomer(Request $request){
         $customer_id  = $request->input('id');
         $user         = $request->input('phone');
@@ -59,5 +64,20 @@ class CustomerController{
         return Response::json(["delCustomer" => $delCustomer]);        
     }
 
-    //test小白请求
+    /**
+     * @Author    Cion
+     * @DateTime  2018-04-20
+     * @copyright 批量删除
+     * @param     Request     $request [description]
+     */
+    function deleteCustomers(Request $request){
+        $customerIds    = $request->input('customerIds'); 
+        $customerPhones = $request->input('customerPhones');
+
+        if(Customer::delCustomersId($customerIds,$customerPhones))
+            return responseToJson(1,"success");
+        else{
+            return responseToJson(0,"failed");
+        }        
+    }
 } 
