@@ -10,6 +10,7 @@ namespace App\Models\Admin;
 
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Product extends Model
 {
@@ -62,13 +63,19 @@ class Product extends Model
                 ->orderBy('id','desc')
                 ->get();
         }
+
+        foreach($product as $pro){
+            $unit = DB::table('product_unit')->where('id',$pro->unit_id)->first();
+            $pro->unit_id = $unit->name;
+        }
+
         return ['total'=>$total,'product'=>$product];        
     }
 
-    // /**
-    //  * 搜索 产品列表
-    //  */
-    // public static function get_list($page,$pageSize,$arr){
+    /**
+     * 删除产品（文件 sku）
+     */                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    static function delete_product($id){
         
-    // }
+    }
 }
