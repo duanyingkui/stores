@@ -13,4 +13,5 @@ Route::group(['prefix'=>"product" , 'namespace'=>'Admin'],function(){
     Route::get('get_variety',['uses'=>'ProductController@get_variety']);
 
     Route::get('get_product_list_paginate',['uses'=>'ProductController@get_product_list_paginate']);
+    Route::post('delete_product',['uses'=>'ProductController@delete_product']);
 });

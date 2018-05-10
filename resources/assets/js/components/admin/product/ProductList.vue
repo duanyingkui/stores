@@ -105,6 +105,7 @@
                axios.get('/admin/product/get_product_list_paginate',{params:query}).then(function(res){
                     self.loading = false;
                     var data = res.data.msg;
+                    console.log(data);
                     self.total = data.total;
                     self.tableData = data.product;               
                 })
@@ -121,24 +122,27 @@
             handleEdit(id) {
                 this.$router.push(`/product/edit?id=${id}`);
             },
+            SkuEdit(id){
+                this.$router.push(`/product/pro_sku?id=${id}`);
+            },
             handleDelete(id) {
                 var self = this;
-                this.$confirm('确认删除？','提示',{
+                self.$confirm('确认删除？','提示',{
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(function(){
-                   self.$http.post('/admin/product/delete',{id:id}).then(function(res){
+                    axios.post('/admin/product/delete_product',{id:id}).then(function(res){
                        var data = res.data;
                        data.code==0? self.getData() : '';
                        var title = data.code==0 ? '成功' : '失败';
                        var type = data.code ==0 ? 'success' : 'warning';
-                       this.$notify({
+                       self.$notify({
                            title: title,
                            message: data.msg,
                            type: type
                        });
-                   })
+                    })
                 }).catch(function(){})
             },
         },

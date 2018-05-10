@@ -31,6 +31,7 @@ export default new VueRouter({
             path: '/wx/menu',
             component: resolve =>void(require(['../components/admin/wx/menu.vue'], resolve))
         },
+        //产品模块
         {
 
             name: '编辑产品',
@@ -42,6 +43,12 @@ export default new VueRouter({
             name: '产品列表',
             path: '/product/list',
             component: resolve => void(require(['../components/admin/product/ProductList.vue'], resolve))
+        },
+        {
+
+            name: '产品_sku',
+            path: '/product/pro_sku',
+            component: resolve => void(require(['../components/admin/product/ProSku.vue'], resolve))
         },
         {
             name: '新增订单',

@@ -137,10 +137,10 @@ class ProductController extends Controller
      * 产品列表
      */
     function get_product_list_paginate(Request $request){
-        $page = intval($request->page);
+        $page     = intval($request->page);
         $pageSize = intval($request->pageSize);
-        $arr = $request->selt_product;
-        $name = isset($arr['name']) ? $arr['name'] : null;
+        $arr      = $request->selt_product;
+        $name     = isset($arr['name']) ? $arr['name'] : null;
         // dd($arr["name"]);
         if($name == null){
             $product = Product::get_product_list_paginate($page,$pageSize,null);
@@ -154,4 +154,22 @@ class ProductController extends Controller
             return responseToJson(1,"get_product_list error!");
         }
     }
+
+    /**
+     * 删除产品
+     */
+    function delete_product(Request $request){
+        $id = $request->input('id');
+        if($id != null){
+            $del = Product::delete_product($id);
+            if ($del) {
+                return responseToJson(0,"删除成功");;
+            }else{
+                return responseToJson(1,"删除失败！");
+            }
+        }else{
+            return responseToJson(1,"删除失败！");
+        }
+    }
+
 }
