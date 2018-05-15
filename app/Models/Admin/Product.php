@@ -30,11 +30,6 @@ class Product extends Model
         return Product::select('id', 'product_name as value')->get();
     }
 
-    public function files()
-    {
-        return $this->belongsToMany('App\Models\Admin\File');
-    }
-
     /**
      * 添加产品
      */
@@ -54,6 +49,7 @@ class Product extends Model
                 ->orderBy('id','desc')
                 ->get();
         }else{
+            //搜索，还没写
             $name = $arr['name'];
             if($name != ''){
                 $query->where('name',$name);
@@ -68,7 +64,6 @@ class Product extends Model
             $unit = DB::table('product_unit')->where('id',$pro->unit_id)->first();
             $pro->unit_id = $unit->name;
         }
-
         return ['total'=>$total,'product'=>$product];        
     }
 
@@ -78,4 +73,37 @@ class Product extends Model
     static function delete_product($id){
         
     }
+
+    /**
+     * 获取产品sku
+     * 搜索
+     */
+    static function product_sku_paginate($page,$pageSize,$arr,$id){
+        $total = Product::find($id)->skus()->count();
+        if($arr == null){
+            $product_sku = Product::find($id)->skus()->get();
+            // dd($product_sku);
+            
+            foreach($product_sku as $sku_item){
+                $items = Item::getItem($sku_item->id);
+                // dd($items);
+                $itemstr = "";
+                foreach($items as $item){
+                    $item_name = $item->name;
+                    $itemstr.="$item_name";
+                    $itemstr.=",";
+                    // var_dump($itemstr);
+                }
+                // dd($itemstr);
+                $sku_item->item = $itemstr;
+            }
+
+            // dd($product_sku);
+        }else{
+            //搜索
+        }
+        // dd($product_sku);
+        return ['total'=>$total,'product_sku'=>$product_sku];      
+    }
+
 }

@@ -17,6 +17,7 @@ use App\Models\Admin\Unit;
 use App\Models\Admin\Variety;
 use App\Models\Admin\Product;
 use App\Models\Admin\Files;
+use App\Models\Admin\Item;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -147,7 +148,6 @@ class ProductController extends Controller
         }else{
             $product = Product::get_product_list_paginate($page,$pageSize,$arr);
         }
-        return responseToJson(0,$product);
         if($product){
             return responseToJson(0,$product);
         }else{
@@ -171,5 +171,45 @@ class ProductController extends Controller
             return responseToJson(1,"删除失败！");
         }
     }
+
+    /**
+     * 产品sku列表
+     */
+    function product_sku_paginate(Request $request){
+        $page     = intval($request->page);
+        $pageSize = intval($request->pageSize);
+        $arr      = $request->pro_sku;
+        $id       = $request->id;
+        $name     = isset($arr['name']) ? $arr['name'] : null;
+        // dd($arr["name"]);
+        if($name == null){
+            $product_sku = Product::product_sku_paginate($page,$pageSize,null,$id);
+        }else{
+            $product_sku = Product::product_sku_paginate($page,$pageSize,$arr,$id);
+        }
+        if($product_sku){
+            return responseToJson(0,$product_sku);
+        }else{
+            return responseToJson(1,"get_product_sku error!");
+        }
+    }
+
+    /**
+     * 查询sku属性值
+     */
+    // static function get_sku_item(Request $request){
+    //     $id = $request->input('id');
+    //     if($id != null && $id > 0){
+    //         $sku_item = Item::getItem($id);
+    //         // dd($sku_item);
+    //         if($sku_item){
+    //             return responseToJson(0,$sku_item);
+    //         }else{
+    //             return responseToJson(1,"get_sku_item error!");
+    //         }
+    //     }else{
+    //         return responseToJson(1,"get_sku_item error!");
+    //     }
+    // }
 
 }
